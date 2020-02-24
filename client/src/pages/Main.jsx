@@ -28,8 +28,8 @@ const Main = () => {
   return (
     <Router>
         <div>
-            <Navbar />
             <UserContextProvider>
+                <Navbar />
                 <ProtectedRoute exact path="/" component={Home}/>
                 <ProtectedRoute path="/reservations" component={Reservations}/>
                 <Route path="/login" component={Login}/>
