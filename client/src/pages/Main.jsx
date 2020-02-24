@@ -12,6 +12,8 @@ import ReactDOM from 'react-dom';
 import Home from '../pages/Home';
 import Footer from '../pages/Footer';
 import Navbar from '../pages/Navbar';
+import Login from '../pages/Login';
+import Reservations from '../pages/Reservations';
 
 
 function Main(props) {
@@ -21,6 +23,8 @@ function Main(props) {
         <div>
             <Navbar />
             <Route exact path="/" component={Home}/>
+            <Route path="/login" component={Login}/>
+            <Route path="/reservations" component={Reservations}/>
             <Footer />
         </div>
     </Router>
