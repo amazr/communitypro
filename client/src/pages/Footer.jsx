@@ -9,8 +9,8 @@ function Footer(props) {
         return (
                 <div>    
                     
-                    <div class="text-center mt-3">
-                <h6 class="font-italic">Copyright 2020. Best Community Service.</h6>
+                    <div className="text-center mt-3">
+                <h6 className="font-italic">Copyright 2020. Best Community Service.</h6>
             </div>
         
             <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
