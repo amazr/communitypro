@@ -37,4 +37,15 @@ app.post('/user', async (req, res) => {
     }
 });
 
+app.post('/login', (req,res) => {
+    res.send([req.body.username,req.body.password]);
+
+    //userModel.findOne({
+    //    username: req.body.username,
+    //   password: req.body.password
+    //}, 
+    //(err,person) => {
+    //});
+});
+
 module.exports = app
