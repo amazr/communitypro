@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { Redirect } from "react-router-dom";
+
 
 class Login extends React.Component {
 
@@ -8,41 +10,65 @@ class Login extends React.Component {
             apiResponse: "",
             username: "",
             password: "",
+            loginFailed: null,
+            authenticated: false
         };
     }
     
+
     authenticate(event) {
-
         event.preventDefault();
-
         var payload={
                 username: this.state.username,
                 password: this.state.password
             }
         
-        console.log(payload);
+        console.log("DEBUG: "+payload.username);
 
         fetch("http://localhost:8080/login",{
             method: 'POST',
             body: JSON.stringify(payload),
             headers:{ 'Content-Type': 'application/json' }
             })
-            .then(res => res.text())
+            .then(res => res.json())
             .then(res => { 
                 this.setState({ apiResponse: res });
+
+                if (res.isLoggedIn === true)
+                {
+                    console.log("Logged in");
+                    console.log(this.state.apiResponse)
+                    this.setState({ authenticated: true });
+           
+                } else {
+                    console.log("Login failed");
+                    console.log(this.state.apiResponse)
+                    this.setState({ loginFailed: res.message });
+                }
             });
-
-
-            console.log(this.state.apiResponse);
     }
 
     render() {
+
+        if (this.state.authenticated === true) {
+            return <Redirect to='/' />
+        }
+
+
         return (
             <div className = "container mt-5">
             
                 <div className="card shadow text-center bg-light mb-3" >
                     <div className="card-header"><i className="fas fa-hands-helping"></i> Login</div>
                     <div className="card-body">
+
+                    { (this.state.loginFailed!=null) 
+                    ? <div className="alert alert-danger" role="alert" id="passwordInvalid">
+                            {this.state.loginFailed}
+                        </div>
+                    : null
+                    }
+
                         <form>
                             <div className="input-group mb-3">
                                 <div className="input-group-prepend">
