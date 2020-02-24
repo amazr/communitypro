@@ -16,7 +16,7 @@ MongoClient.connect(process.env.MONGO_CONNECT, { useUnifiedTopology: true }, (er
 
 });
 
-app.get('/a/test', (req,res) => {
+app.get('/a/getTest', (req,res) => {
     let test = "This is a test";
     res.json(test);
     console.log('Test string');
