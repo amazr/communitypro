@@ -16,7 +16,8 @@ function Navbar(props) {
         Auth.logout();
 
         fetch("http://localhost:8080/logout", {
-            method: 'POST'
+            method: 'POST',
+            credentials: 'include'
             })
             .then(res => console.log(res.text()))
       }

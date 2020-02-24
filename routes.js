@@ -1,5 +1,6 @@
 const express = require('express');
 const userModel = require('./models/user');
+const reservationModel = require('./models/reservation');
 const app = express();
 
 
@@ -26,7 +27,7 @@ app.get('/users', async (req, res) => {
 
 //POSTS
 app.post('/login', (req,res) => {
-
+    console.log("Logging in...");
     let state = {
         isLoggedIn: false,
         username: "",
@@ -45,8 +46,9 @@ app.post('/login', (req,res) => {
                 state.isLoggedIn = true;
                 state.username = person.username;
                 req.session.user = {
-                    name: state.username,
+                    name: state.username
                 };
+                console.log("sessions set: " + req.session.user.name);
             }
         }
         res.send(state);
@@ -60,6 +62,7 @@ app.post('/logout', (req,res) => {
         delete req.session.user;
         success = true;
     }
+    console.log(success);
     res.send(success);
 });
 
