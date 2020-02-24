@@ -11,6 +11,7 @@ mongoose.connect(process.env.MONGO_CONNECT, {useNewUrlParser: true, useUnifiedTo
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 app.use(cors());
+app.use(express.json());
 app.use(express.static('client'));
 app.use(routes);
 
