@@ -38,14 +38,29 @@ app.post('/user', async (req, res) => {
 });
 
 app.post('/login', (req,res) => {
-    res.send([req.body.username,req.body.password]);
 
-    //userModel.findOne({
-    //    username: req.body.username,
-    //   password: req.body.password
-    //}, 
-    //(err,person) => {
-    //});
+    let state = {
+        isLoggedIn: false,
+        username: "",
+        message: ""
+    };
+
+    userModel.findOne({
+        username: req.body.username,
+    },
+    (err,person) => {
+        if (err) state.message = err;
+        else if (!person) state.message = "Username Not Found";
+        else {
+            if (!person.password === req.body.password) state.message = "Invalid Password";
+            else {
+                state.isLoggedIn = true;
+                state.username = person.username;
+            }
+        }
+        res.send(state);
+    });
+
 });
 
 module.exports = app
