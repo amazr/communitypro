@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom';
 import {UserContext} from '../context/UserContext';
 import { Redirect } from "react-router-dom";
 
@@ -54,7 +55,7 @@ class Home extends React.Component {
                 <div className="card-body">
                 <h5 className="card-title">Nothing to see here...</h5>
                 <p className="card-text">Your reservations will appear here. So empty!</p>
-                <a href="/reservations" className="btn btn-info">Make a Reservation <i className="fas fa-arrow-circle-right"></i></a>
+                <Link to="/reservations" className="btn btn-info">Make a Reservation <i className="fas fa-arrow-circle-right"></i></Link>
                 </div>
                 <div className="card-footer text-muted">
                 Available

@@ -63,7 +63,7 @@ class Login extends React.Component {
         }
 
         return (
-            <div className = "container mt-5">
+            <div className = "container mt-5 col-md-8 col-lg-6 col-xl-5 col-sm-8">
             
                 <div className="card shadow text-center bg-light mb-3" >
                     <div className="card-header"><i className="fas fa-hands-helping"></i> Login</div>
@@ -88,7 +88,7 @@ class Login extends React.Component {
                             <div className="input-group mb-3">
                                 <div className="input-group-prepend">
                                     <span className="input-group-text"><i className="fas fa-lock"></i></span>
-                                    <span className="input-group-text">Password</span>
+                                    <span className="input-group-text">Password </span>
                                 </div>
                                 <input type="password" className="form-control" onChange = {(event) => this.setState({password:event.target.value})} aria-label="Please enter your Password" />
                             </div>
