@@ -6,7 +6,7 @@ const app = express();
 app.use(express.static('client'));
 
 MongoClient.connect(process.env.MONGO_CONNECT, { useUnifiedTopology: true }, (err, database) => {
-    if (err) return console.log("CONNECTION" + err);
+    if (err) return console.log("FAILED TO CONNECT: " + err);
     //Connect to our cluster
     db = database.db('Cluster0');
 
