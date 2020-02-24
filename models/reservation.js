@@ -5,12 +5,12 @@ let reservationSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    timeFrom: {
-        type: Date,
+    timeStart: {
+        type: Number,
         required: true
     },
-    timeTo: {
-        type: Date,
+    timeEnd: {
+        type: Number,
         required: true
     },
     reservedDate: {
