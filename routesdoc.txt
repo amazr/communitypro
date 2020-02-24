@@ -1,0 +1,22 @@
+POST /availability {
+
+    Requires: room, date
+
+    Returns: JSON
+    {
+        times: [],
+        message: ""
+    }
+
+    What to expect from times:
+        The field times is an array filled with available start times represented in military time. By Default,
+        times = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]. Any unavailbe times will be removed from the array
+        before being returned. times = [7, 10, 14] means that only 7-7:59, 10-10:59, and 2-2:59 are available.
+
+    What to expect from message: 
+        1.) Message is an error (from mongoose), which might be a db connection issue.
+        2.) Message is "Room has nothing reserved this day", which means either the room you passed in has no reservations, or it
+            doesn't have any on the date you passed in, or the data you passed in could be wrong.
+        3.) Message is "Success: Found 4 reservations on this date". Everything worked and 4 times should have been removed from
+            the times array.
+}

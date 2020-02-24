@@ -48,7 +48,7 @@ app.post('/availability', (req,res) => {
     //req.body.room
     //req.body.date
     let response = {
-        times: [false, false, false, false, false, false, false, false, false, false, false, false, false],
+        times: [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
         message: ""
     };
 
@@ -61,7 +61,8 @@ app.post('/availability', (req,res) => {
         else if (reservations.length === 0) response.message = "Room has nothing reserved this day";
         else {
             reservations.forEach((reservation) => {
-                response.times[reservation.timeStart - 7] = true;
+                let index = response.times.indexOf(reservation.timeStart);
+                response.times.splice(index, 1);
             });
             response.message = ("Success: Found " + reservations.length + " reservations on this date");
         }
