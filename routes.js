@@ -45,10 +45,6 @@ app.post('/login', (req,res) => {
             else {
                 state.isLoggedIn = true;
                 state.username = person.username;
-                req.session.user = {
-                    name: state.username
-                };
-                console.log("sessions set: " + req.session.user.name);
             }
         }
         res.send(state);
@@ -58,17 +54,11 @@ app.post('/login', (req,res) => {
 
 app.post('/logout', (req,res) => {
     let success = false;
-    if (req.session.user) {
-        delete req.session.user;
-        success = true;
-    }
-    console.log(success);
     res.send(success);
 });
 
 app.post('/loggedin', (req,res) => {
-    let status = true;
-    if (!req.session.user) status = false;
+    let status = false;
     res.send(status);
 })
 
