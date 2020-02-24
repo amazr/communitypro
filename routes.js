@@ -52,7 +52,7 @@ app.post('/login', (req,res) => {
         if (err) state.message = err;
         else if (!person) state.message = "Username Not Found";
         else {
-            if (!person.password === req.body.password) state.message = "Invalid Password";
+            if (person.password !== req.body.password) state.message = "Invalid Password";
             else {
                 state.isLoggedIn = true;
                 state.username = person.username;
