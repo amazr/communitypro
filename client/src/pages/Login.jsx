@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import { Redirect } from "react-router-dom";
-
+import {UserContext} from '../context/UserContext';
+import Auth from '../context/Auth';
 
 class Login extends React.Component {
 
-    constructor(props) {
-        super(props);
+    static contextType = UserContext;
+
+    constructor(props,context) {
+        super(props,context);
         this.state = { 
             apiResponse: "",
             username: "",
@@ -15,6 +18,9 @@ class Login extends React.Component {
         };
     }
     
+    componentDidMount() {
+
+      }
 
     authenticate(event) {
         event.preventDefault();
@@ -37,7 +43,9 @@ class Login extends React.Component {
                 if (res.isLoggedIn === true)
                 {
                     console.log("Logged in");
-                    console.log(this.state.apiResponse)
+                    Auth.login();
+                    this.context.setUser(res.username);
+                    console.log(this.state.apiResponse);
                     this.setState({ authenticated: true });
            
                 } else {
@@ -53,7 +61,6 @@ class Login extends React.Component {
         if (this.state.authenticated === true) {
             return <Redirect to='/' />
         }
-
 
         return (
             <div className = "container mt-5">
@@ -94,5 +101,6 @@ class Login extends React.Component {
         );
     }
 }
+
 
 export default Login;

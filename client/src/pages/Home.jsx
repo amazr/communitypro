@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
+import {UserContext} from '../context/UserContext';
 
 class Home extends React.Component {
+
+    static contextType = UserContext;
 
     constructor(props) {
         super(props);
