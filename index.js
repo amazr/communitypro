@@ -1,27 +1,18 @@
 const express = require('express');
-const MongoClient = require('mongodb').MongoClient;
+const mongoose = require('mongoose');
+const bcrypt = require("bcrypt");
+const routes = require('./routes');
 require('dotenv').config();
+
 const app = express();
 
+mongoose.connect(process.env.MONGO_CONNECT, {useNewUrlParser: true, useUnifiedTopology: true});
+let db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
 app.use(express.static('client'));
+app.use(routes);
 
-MongoClient.connect(process.env.MONGO_CONNECT, { useUnifiedTopology: true }, (err, database) => {
-    if (err) return console.log("FAILED TO CONNECT: " + err);
-    //Connect to our cluster
-    db = database.db('Cluster0');
-
-    app.listen(8080, () => {
-        console.log("Server running on localhost:8080");
-    });
-
-});
-
-app.get('/a/getTest', (req,res) => {
-    let test = "This is a test";
-    res.json(test);
-    console.log('Test string');
-});
-
-app.get('/', (req,res) => {
-    res.send('Hello World!')
+app.listen(8080, () => {
+    console.log("Server running on localhost:8080");
 });
