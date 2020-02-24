@@ -11,7 +11,7 @@ import Footer from '../pages/Footer';
 import Navbar from '../pages/Navbar';
 import Login from '../pages/Login';
 import Reservations from '../pages/Reservations';
-import {UserContext,UserContextProvider} from '../context/UserContext';
+import {UserContextProvider} from '../context/UserContext';
 import Auth from '../context/Auth';
 
 
