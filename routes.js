@@ -63,4 +63,10 @@ app.post('/logout', (req,res) => {
     res.send(success);
 });
 
+app.post('/loggedin', (req,res) => {
+    let status = true;
+    if (!req.session.user) status = false;
+    res.send(status);
+})
+
 module.exports = app
