@@ -22,14 +22,13 @@ app.use(session({
     }),
     secret:'random key thing',
     resave:true,
-    saveUnitialized:true,
+    saveUninitialized:true,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 7 * 2 // two weeks
     }
 }));
 
 app.use(cors());
-app.use()
 app.use(express.json());
 app.use(express.static('client'));
 app.use(routes);
