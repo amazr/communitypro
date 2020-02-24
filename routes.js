@@ -25,18 +25,6 @@ app.get('/users', async (req, res) => {
 });
 
 //POSTS
-app.post('/user', async (req, res) => {
-    //Put json object into userModel
-    //const user = new userModel();
-
-    try {
-      await user.save();
-      res.send(user);
-    } catch (err) {
-      res.status(500).send(err);
-    }
-});
-
 app.post('/login', (req,res) => {
 
     let state = {
@@ -56,11 +44,29 @@ app.post('/login', (req,res) => {
             else {
                 state.isLoggedIn = true;
                 state.username = person.username;
+                req.session.user = {
+                    name: state.username,
+                };
             }
         }
         res.send(state);
     });
 
 });
+
+app.post('/logout', (req,res) => {
+    let success = false;
+    if (req.session.user) {
+        delete req.session.user;
+        success = true;
+    }
+    res.send(success);
+});
+
+app.post('/loggedin', (req,res) => {
+    let status = true;
+    if (!req.session.user) status = false;
+    res.send(status);
+})
 
 module.exports = app
