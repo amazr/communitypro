@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom';
 import {UserContext} from '../context/UserContext';
 import { Redirect } from "react-router-dom";
@@ -24,7 +24,7 @@ class Home extends React.Component {
 
     render() {
 
-        if (this.context.user == undefined) {
+        if (this.context.user === undefined) {
             return <Redirect to='/login' />
         }
 

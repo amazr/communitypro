@@ -1,10 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import {UserContext} from '../context/UserContext';
 import * as Cookies from "js-cookie";
 import { useContext } from 'react';
 import Auth from '../context/Auth';
-import { Redirect } from "react-router-dom";
 
 function Navbar(props) {
 
@@ -22,7 +20,7 @@ function Navbar(props) {
             })
             .then(res => console.log(res.text()))
       }
-      if (user == undefined) {
+      if (user === undefined) {
         return (
             <nav className="navbar navbar-expand-lg navbar-dark bg-info justify-content-between">
                 <a className="navbar-brand" href="#">

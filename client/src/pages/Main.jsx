@@ -5,14 +5,12 @@ import {
   Redirect
 } from "react-router-dom";
 import ReactDOM from 'react-dom';
-import {useContext} from 'react';
 import Home from '../pages/Home';
 import Footer from '../pages/Footer';
 import Navbar from '../pages/Navbar';
 import Login from '../pages/Login';
 import Reservations from '../pages/Reservations';
-import {UserContext,UserContextProvider} from '../context/UserContext';
-import Auth from '../context/Auth';
+import {UserContextProvider} from '../context/UserContext';
 import Cookies from "js-cookie";
 
 

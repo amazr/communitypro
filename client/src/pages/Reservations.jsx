@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import DatePicker from "react-datepicker";
 import { addDays,setHours,setMinutes } from 'date-fns';
-
 import "react-datepicker/dist/react-datepicker.css";
 
 class Reservations extends React.Component {
@@ -9,7 +8,7 @@ class Reservations extends React.Component {
     state = {
         startDate: new Date(),
         startTime: setHours(setMinutes(new Date(), 0), 7),
-        location: null,
+        location: "",
         step: 0
       };
 
@@ -66,11 +65,6 @@ class Reservations extends React.Component {
                 
 
                    
-
-                    <div className="mt-2 collapse">
-                        <a href="#" className="btn btn-info">Next <i className="fas fa-arrow-circle-right"></i></a>
-                    </div>
- 
                 </div>
 
 
@@ -78,7 +72,7 @@ class Reservations extends React.Component {
         <div className="card-body">
 
         <h5 className="card-title">Okay! What time?</h5>
-            {this.getFormattedDate(this.state.startDate)}
+            For <strong>{this.getFormattedDate(this.state.startDate)}</strong> in <strong>{(this.state.location)}</strong> 
             <div className="alert alert-warning" role="alert">
             Between 7 AM - 8 PM
             </div>
@@ -103,9 +97,9 @@ class Reservations extends React.Component {
         <h5 className="card-title">Gotcha. Which location?</h5>
             For <strong>{this.getFormattedDate(this.state.startDate)}</strong>
             <div className="mt-1" style={{height: 150+'px'}}>
-                <button type="button" className="btn btn-primary btn-lg h-100 col-3"><i className="fas fa-home"></i> <p>Rec Area</p></button>
-                <button type="button" className="btn btn-primary btn-lg ml-1 mr-1 h-100 col-3"><i className="fas fa-archway"></i> <p>Main Hall</p></button>
-                <button type="button" className="btn btn-primary btn-lg h-100 col-3"><i className="fas fa-campground"></i> <p>Picnic Area</p></button>
+                <button type="button" onClick={()=>{this.setState({location: "Rec Area", step: 2})}} className="btn btn-primary btn-lg h-100 col-3"><i className="fas fa-home"></i> <p>Rec Area</p></button>
+                <button type="button" onClick={()=>{this.setState({location: "Main Hall", step: 2})}} className="btn btn-primary btn-lg ml-1 mr-1 h-100 col-3"><i className="fas fa-archway"></i> <p>Main Hall</p></button>
+                <button type="button" onClick={()=>{this.setState({location: "Picnic Area", step: 2})}} className="btn btn-primary btn-lg h-100 col-3"><i className="fas fa-campground"></i> <p>Picnic Area</p></button>
 
             </div>
 
