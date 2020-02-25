@@ -9,6 +9,7 @@ class Reservations extends React.Component {
         startDate: new Date(),
         startTime: setHours(setMinutes(new Date(), 0), 7),
         location: "",
+        times: null,
         step: 0
       };
 
@@ -35,7 +36,52 @@ class Reservations extends React.Component {
         this.setState({startTime: time})
       }
 
+
+      getAvailability(room) {
+
+        var payload={
+                room: room,
+                date: this.state.startDate
+            }
+        
+        console.log("DEBUG: "+payload.room);
+
+        fetch("http://localhost:8080/availability",{
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers:{ 'Content-Type': 'application/json' }
+            })
+            .then(res => res.json())
+            .then(res => { 
+                this.setState({ apiResponse: res });
+
+                if (res.times !== undefined)
+                {
+                    console.log("Availability recieved");
+                    console.log(this.state.apiResponse);
+                    this.setState({location: room, times: res.times, step: 2})
+
+                } else {
+                    console.log("Availability failed");
+                    console.log(this.state.apiResponse)
+                    
+                }
+            });
+    }
+
     render() {
+
+
+        const availableTimes = [];
+
+        if (this.state.times !== null) 
+        {
+            for (const [index, value] of this.state.times.entries()) {
+                availableTimes.push(setHours(setMinutes(new Date(), 0), value),)
+              }
+              console.log(availableTimes);
+        }
+
 
         return (
             <div className = "container mt-3">
@@ -72,22 +118,48 @@ class Reservations extends React.Component {
         <div className="card-body">
 
         <h5 className="card-title">Okay! What time?</h5>
-            For <strong>{this.getFormattedDate(this.state.startDate)}</strong> in <strong>{(this.state.location)}</strong> 
-            <div className="alert alert-warning" role="alert">
-            Between 7 AM - 8 PM
+
+        <div className="row"> 
+            <div className="col col-md-5 col-sm-12 col-lg-5 col-lg-5 mb-2"> 
+            <div class="card text-center" >
+                <div className="card-header">
+                    <i className="fas fa-hourglass-half"></i> Reservation Details
+                </div>
+                <ul className="list-group list-group-flush">
+                    <li className="list-group-item">Location: <strong>{(this.state.location)}</strong> </li>
+                    <li className="list-group-item">Date: <strong>{this.getFormattedDate(this.state.startDate)}</strong></li>
+                </ul>
+            </div>
+            </div>
+            <div className="col col-md-7 col-sm-12 col-lg-7 col-xl-7 "> 
+            <div className="card border-primary">
+
+                <div className="card-header"><i className="fas fa-clock"></i> Select Time</div>
+                    <div class="card-body">
+                    <h5 class="card-title">Select from available times</h5>
+                        <DatePicker
+                            selected={this.state.startTime}
+                            onChange={date => this.pickTime(date)}
+                            showTimeSelect
+                            showTimeSelectOnly
+                            minTime={setHours(setMinutes(new Date(), 0), 7)}
+                            maxTime={setHours(setMinutes(new Date(), 0), 19)}
+                            includeTimes={availableTimes}
+                            timeIntervals={60}
+                            placeholderText="Select Time"
+                            timeCaption="Time"
+                            dateFormat="h:mm aa"
+                        />
+                    </div>
+                </div>
             </div>
 
-        <DatePicker
-            selected={this.state.startTime}
-            onChange={date => this.pickTime(date)}
-            showTimeSelect
-            showTimeSelectOnly
-            minTime={setHours(setMinutes(new Date(), 0), 7)}
-            maxTime={setHours(setMinutes(new Date(), 0), 20)}
-            timeIntervals={60}
-            timeCaption="Time"
-            dateFormat="h:mm aa"
-        />
+        </div>
+
+        <div>
+            <hr />
+            <small>Reservations only available between 7 AM - 7 PM</small>
+        </div>
         </div>
  
     : ((this.state.step === 1) ) ?
@@ -97,9 +169,9 @@ class Reservations extends React.Component {
         <h5 className="card-title">Gotcha. Which location?</h5>
             For <strong>{this.getFormattedDate(this.state.startDate)}</strong>
             <div className="mt-1" style={{height: 150+'px'}}>
-                <button type="button" onClick={()=>{this.setState({location: "Rec Area", step: 2})}} className="btn btn-primary btn-lg h-100 col-3"><i className="fas fa-home"></i> <p>Rec Area</p></button>
-                <button type="button" onClick={()=>{this.setState({location: "Main Hall", step: 2})}} className="btn btn-primary btn-lg ml-1 mr-1 h-100 col-3"><i className="fas fa-archway"></i> <p>Main Hall</p></button>
-                <button type="button" onClick={()=>{this.setState({location: "Picnic Area", step: 2})}} className="btn btn-primary btn-lg h-100 col-3"><i className="fas fa-campground"></i> <p>Picnic Area</p></button>
+                <button type="button" value="Rec Area" onClick={(e)=> this.getAvailability("Rec Area")} className="btn btn-primary btn-lg h-100 col-3"><i className="fas fa-home"></i> <p>Rec Area</p></button>
+                <button type="button" value="Main Hall" onClick={(e)=> this.getAvailability("Main Hall")} className="btn btn-primary btn-lg ml-1 mr-1 h-100 col-3"><i className="fas fa-archway"></i> <p>Main Hall</p></button>
+                <button type="button" value="Picnic Area" onClick={(e)=> this.getAvailability("Picnic Area")} className="btn btn-primary btn-lg h-100 col-3"><i className="fas fa-campground"></i> <p>Picnic Area</p></button>
 
             </div>
 

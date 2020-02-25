@@ -30,13 +30,19 @@ class Home extends React.Component {
 
         return (
             <div className = "container mt-3">
-            
-            <div className="card shadow text-center bg-light mb-3" >
-                <div className="card-header"><i className="fas fa-hands-helping"></i> API Endpoint</div>
-                <div className="card-body">
-                <h5 className="card-title">{this.state.apiResponse}</h5>
-                </div>
-            </div>
+
+            { (this.state.apiResponse !== undefined) 
+                ? 
+                    <div class="alert alert-success" role="alert">
+                        <i className="fas fa-cogs"></i> {this.state.apiResponse}
+                    </div>
+                :
+                    <div class="alert alert-danger" role="alert">
+                        <i className="fas fa-plug"></i> No Connection!
+                    </div>
+            }
+
+
 
             <div className="card shadow text-center bg-light mb-3" >
                 <div className="card-header"><i className="fas fa-hands-helping"></i> Volunteer Sign-up</div>
@@ -46,34 +52,38 @@ class Home extends React.Component {
                 </div>
             </div>
     
+            <div className="row">
+                <div className="col-sm-12 col-md-6 col-lg-6">
+                    <div className="card shadow text-center mt-3">
+                        <div className="card-header">
+                            <i className="fas fa-calendar-day"></i> Reservations / Rentals
+                        </div>
+                        <div className="card-body">
+                        <h5 className="card-title">Nothing to see here...</h5>
+                        <p className="card-text">Your reservations will appear here. So empty!</p>
+                        <Link to="/reservations" className="btn btn-info">Make a Reservation <i className="fas fa-arrow-circle-right"></i></Link>
+                        </div>
+                        <div className="card-footer text-muted">
+                        Available
+                        </div>
+                    </div>
+                </div>
 
 
-            <div className="card shadow text-center mt-3">
-                <div className="card-header">
-                    <i className="fas fa-calendar-day"></i> Reservations / Rentals
-                </div>
-                <div className="card-body">
-                <h5 className="card-title">Nothing to see here...</h5>
-                <p className="card-text">Your reservations will appear here. So empty!</p>
-                <Link to="/reservations" className="btn btn-info">Make a Reservation <i className="fas fa-arrow-circle-right"></i></Link>
-                </div>
-                <div className="card-footer text-muted">
-                Available
-                </div>
-            </div>
-
-
-            <div className="card shadow text-center mt-3">
-                <div className="card-header">
-                    <i className="fas fa-wheelchair"></i> Homecare
-                </div>
-                <div className="card-body">
-                <h5 className="card-title">Nothing to see here...</h5>
-                <p className="card-text">Need to request community service or homecare?</p>
-                <a href="#" className="btn btn-info">Make a Request <i className="fas fa-arrow-circle-right"></i></a>
-                </div>
-                <div className="card-footer text-muted">
-                Available
+                <div className="col-sm-12 col-md-6 col-lg-6">
+                    <div className="card shadow text-center mt-3">
+                        <div className="card-header">
+                            <i className="fas fa-wheelchair"></i> Homecare
+                        </div>
+                        <div className="card-body">
+                        <h5 className="card-title">Nothing to see here...</h5>
+                        <p className="card-text">Need to request community service or homecare?</p>
+                        <a href="#" className="btn btn-info">Make a Request <i className="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                        <div className="card-footer text-muted">
+                        Available
+                        </div>
+                    </div>
                 </div>
             </div>
 

@@ -4,7 +4,7 @@ const reservationModel = require('./models/reservation');
 const app = express();
 
 app.get('/', (req,res) => {
-    res.send('Listening...');
+    res.send('Service Online');
 });
 
 //POSTS
