@@ -153,6 +153,10 @@ class Reservations extends React.Component {
                             maxDate={addDays(new Date(), 31)}
              
                         />
+
+            <div className="mt-4">
+                <Link to="/" className="btn btn-danger btn-md"><i class="fas fa-home"></i> Return Home</Link>
+            </div>
                                 <div>
             <hr />
             <small>You can only make Reservation a maximum of 31 days in advance!</small>
@@ -199,6 +203,10 @@ class Reservations extends React.Component {
                     </div>
                 </div>
             </div>
+            
+            <div className="mt-4 text-center col-12">
+                <button type="button" onClick={(e)=> this.setState({step: this.state.step-1})} className="btn btn-danger btn-lg"><i class="fas fa-arrow-circle-left"></i> Back</button>
+            </div>
 
         </div>
 
@@ -219,7 +227,7 @@ class Reservations extends React.Component {
               <i className="fas fa-hourglass-half"></i> Reservation Details
           </div>
           <ul className="list-group list-group-flush">
-              <li className="list-group-item">Location: <strong>{(this.state.location)}</strong> </li>
+              <li className="list-group-item">Location: <strong>{(this.state.location)}</strong>  </li>
               <li className="list-group-item">Date: <strong>{this.getFormattedDate(this.state.startDate)}</strong></li>
               <li className="list-group-item">Time: <strong>{this.state.startTime.getHours()}:00</strong></li>
           </ul>
@@ -256,6 +264,9 @@ class Reservations extends React.Component {
                 <button type="button" value="Main Hall" onClick={(e)=> this.getAvailability("Main Hall")} className="btn btn-primary btn-lg ml-1 mr-1 h-100 col-3"><i className="fas fa-archway"></i> <p>Main Hall</p></button>
                 <button type="button" value="Picnic Area" onClick={(e)=> this.getAvailability("Picnic Area")} className="btn btn-primary btn-lg h-100 col-3"><i className="fas fa-campground"></i> <p>Picnic Area</p></button>
 
+            </div>
+            <div className="mt-4">
+                <button type="button" onClick={(e)=> this.setState({step: this.state.step-1})} className="btn btn-danger btn-lg"><i class="fas fa-arrow-circle-left"></i> Back</button>
             </div>
 
         </div>
