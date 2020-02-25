@@ -9,6 +9,7 @@ class Reservations extends React.Component {
     state = {
         startDate: new Date(),
         startTime: setHours(setMinutes(new Date(), 0), 7),
+        location: null,
         step: 0
       };
 
@@ -39,12 +40,13 @@ class Reservations extends React.Component {
 
         return (
             <div className = "container mt-3">
+                <div className="card shadow text-center mt-3">
+                    <div className="card-header">
+                        <i className="fas fa-calendar-day"></i> Reservations / Rentals
+                    </div>
         { (this.state.step === 0) 
         ? 
-            <div className="card shadow text-center mt-3">
-                <div className="card-header">
-                    <i className="fas fa-calendar-day"></i> Reservations / Rentals
-                </div>
+
                 <div className="card-body">
 
                <h5 className="card-title">When do you wish to make the reservation for?</h5>
@@ -59,7 +61,7 @@ class Reservations extends React.Component {
                             minDate={new Date()}
                             inline
                             maxDate={addDays(new Date(), 31)}
-                            placeholderText="Select a date between today and 31 days in the future"
+             
                         />
                 
 
@@ -72,15 +74,7 @@ class Reservations extends React.Component {
                 </div>
 
 
-                <div className="card-footer text-muted">
-                Available
-                </div>
-            </div>
-
-:   <div className="card shadow text-center mt-3">
-        <div className="card-header">
-            <i className="fas fa-calendar-day"></i> Reservations / Rentals
-        </div>
+:  ((this.state.step === 2) ) ?
         <div className="card-body">
 
         <h5 className="card-title">Okay! What time?</h5>
@@ -101,11 +95,27 @@ class Reservations extends React.Component {
             dateFormat="h:mm aa"
         />
         </div>
+ 
+    : ((this.state.step === 1) ) ?
+      
+        <div className="card-body">
+
+        <h5 className="card-title">Gotcha. Which location?</h5>
+            For <strong>{this.getFormattedDate(this.state.startDate)}</strong>
+            <div className="mt-1" style={{height: 150+'px'}}>
+                <button type="button" className="btn btn-primary btn-lg h-100 col-3"><i className="fas fa-home"></i> <p>Rec Area</p></button>
+                <button type="button" className="btn btn-primary btn-lg ml-1 mr-1 h-100 col-3"><i className="fas fa-archway"></i> <p>Main Hall</p></button>
+                <button type="button" className="btn btn-primary btn-lg h-100 col-3"><i className="fas fa-campground"></i> <p>Picnic Area</p></button>
+
+            </div>
+
         </div>
+    : null
+
 }
 
 
-
+    </div>
         </div>
 
         );

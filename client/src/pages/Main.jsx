@@ -11,15 +11,19 @@ import Footer from '../pages/Footer';
 import Navbar from '../pages/Navbar';
 import Login from '../pages/Login';
 import Reservations from '../pages/Reservations';
-import {UserContextProvider} from '../context/UserContext';
+import {UserContext,UserContextProvider} from '../context/UserContext';
 import Auth from '../context/Auth';
+import Cookies from "js-cookie";
 
 
 const Main = () => {
+
+    let sessionCookie = Cookies.get("username");
+    
     
     const ProtectedRoute = ({ component: Component, ...rest }) => (
         <Route {...rest} render={(props) => (
-            Auth.isAuthenticated === true
+            sessionCookie != null
             ? <Component {...props} />
             : <Redirect to='/login' />
         )} />
