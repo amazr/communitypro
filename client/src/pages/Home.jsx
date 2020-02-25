@@ -147,7 +147,7 @@ class Home extends React.Component {
                         </div>
                         <div className="card-body">
 
-                    { (this.state.reservations === null) 
+                    { (this.state.reservations === "No reservations found" || this.state.reservations === null) 
                     ? 
                         <div>
                             <h5 className="card-title">Nothing to see here...</h5>
@@ -175,7 +175,7 @@ class Home extends React.Component {
                         <Link to="/reservations" className="btn btn-info">Make a Reservation <i className="fas fa-arrow-circle-right"></i></Link>
                         </div>
                         <div className="card-footer text-muted">
-                        { (this.state.reservations === null) 
+                        { (this.state.reservations === "No reservations found" || this.state.reservations === null) 
                         ? 
                             "Available"
                         :

@@ -186,6 +186,11 @@ class Reservations extends React.Component {
 
                 <div className="card-header"><i className="fas fa-clock"></i> Select Time</div>
                     <div class="card-body">
+
+                    <div class="alert alert-info" role="alert">
+                        {this.state.apiResponse.message}
+                    </div>
+
                     <h5 class="card-title">Select from available times</h5>
                         <DatePicker
                             selected={this.state.startTime}
@@ -223,7 +228,7 @@ class Reservations extends React.Component {
   <div className="row"> 
       <div className="col col-md-5 col-sm-12 col-lg-5 col-lg-5 mb-2"> 
       <div class="card text-center bg-success" >
-          <div className="card-header">
+          <div className="card-header text-white">
               <i className="fas fa-hourglass-half"></i> Reservation Details
           </div>
           <ul className="list-group list-group-flush">
@@ -258,11 +263,11 @@ class Reservations extends React.Component {
         <div className="card-body">
 
         <h5 className="card-title">Gotcha. Which location?</h5>
-            For <strong>{this.getFormattedDate(this.state.startDate)}</strong>
-            <div className="mt-1" style={{height: 150+'px'}}>
-                <button type="button" value="Rec Area" onClick={(e)=> this.getAvailability("Rec Area")} className="btn btn-primary btn-lg h-100 col-3"><i className="fas fa-home"></i> <p>Rec Area</p></button>
-                <button type="button" value="Main Hall" onClick={(e)=> this.getAvailability("Main Hall")} className="btn btn-primary btn-lg ml-1 mr-1 h-100 col-3"><i className="fas fa-archway"></i> <p>Main Hall</p></button>
-                <button type="button" value="Picnic Area" onClick={(e)=> this.getAvailability("Picnic Area")} className="btn btn-primary btn-lg h-100 col-3"><i className="fas fa-campground"></i> <p>Picnic Area</p></button>
+            <small>For <strong>{this.getFormattedDate(this.state.startDate)}</strong></small>
+            <div className="mt-3" style={{height: 150+'px'}}>
+                <button type="button" value="Rec Area" onClick={(e)=> this.getAvailability("Rec Area")} className="btn btn-primary btn-lg h-100 col-3"><i className="fas fa-home"></i> <div>Rec Area</div></button>
+                <button type="button" value="Main Hall" onClick={(e)=> this.getAvailability("Main Hall")} className="btn btn-primary btn-lg ml-1 mr-1 h-100 col-3"><i className="fas fa-archway"></i> <div>Main Hall</div></button>
+                <button type="button" value="Picnic Area" onClick={(e)=> this.getAvailability("Picnic Area")} className="btn btn-primary btn-lg h-100 col-3"><i className="fas fa-campground"></i> <div>Picnic Area</div></button>
 
             </div>
             <div className="mt-4">

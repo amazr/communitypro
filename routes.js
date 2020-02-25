@@ -58,13 +58,13 @@ app.post('/availability', (req,res) => {
     },
     (err, reservations) => {
         if (err) response.message = err;
-        else if (reservations.length === 0) response.message = "Room has nothing reserved this day";
+        else if (reservations.length === 0) response.message = "Location has nothing reserved this day";
         else {
             reservations.forEach((reservation) => {
                 let index = response.times.indexOf(reservation.timeStart);
                 response.times.splice(index, 1);
             });
-            response.message = ("Success: Found " + reservations.length + " reservations on this date");
+            response.message = ("Found " + reservations.length + " reservations on this date");
         }
         res.send(response);
     });
