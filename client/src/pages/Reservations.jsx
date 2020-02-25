@@ -1,7 +1,10 @@
 import React from 'react'
 import DatePicker from "react-datepicker";
+import { Link } from 'react-router-dom';
 import { addDays,setHours,setMinutes } from 'date-fns';
 import "react-datepicker/dist/react-datepicker.css";
+import Cookies from "js-cookie";
+
 
 class Reservations extends React.Component {
 
@@ -9,6 +12,7 @@ class Reservations extends React.Component {
         startDate: new Date(),
         startTime: setHours(setMinutes(new Date(), 0), 7),
         location: "",
+        user: Cookies.get("username"),
         times: null,
         step: 0
       };
@@ -37,14 +41,58 @@ class Reservations extends React.Component {
       }
 
 
-      getAvailability(room) {
+      makeReservation(time){
+
+        this.pickTime(time);
+        let rentalStart = time.getHours();
+        let rentalEnd = rentalStart+1;
+        
 
         var payload={
-                room: room,
+                room: this.state.location,
+                timeStart: rentalStart,
+                timeEnd: rentalEnd,
+                status: "confirmed",
+                reservedDate: this.state.startDate,
+                name: this.state.user
+            }
+
+        console.log("makeReservation() => "+payload.name+", "+payload.timeStart);
+
+        fetch("http://localhost:8080/reserve",{
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers:{ 'Content-Type': 'application/json' }
+            })
+            .then(res => res.json())
+            .then(res => { 
+                this.setState({ apiResponse: res });
+
+                if (res !== undefined)
+                {
+                    console.log("Reservation recieved");
+                    console.log(this.state.apiResponse);
+                    this.setState({step: 3})
+
+                } else {
+                    console.log("Reservation failed");
+                    console.log(this.state.apiResponse)
+                    
+                }
+            });
+
+      }
+
+      getAvailability(room) {
+
+        this.state.startDate.setHours(0, 0, 0, 0);
+
+        var payload={
+                room: this.state.location,
                 date: this.state.startDate
             }
         
-        console.log("DEBUG: "+payload.room);
+        console.log("getAvailability() => "+payload.room+", "+payload.date);
 
         fetch("http://localhost:8080/availability",{
             method: 'POST',
@@ -74,12 +122,12 @@ class Reservations extends React.Component {
 
         const availableTimes = [];
 
+        // Create a list of date objects that we can pass into time picker
         if (this.state.times !== null) 
         {
             for (const [index, value] of this.state.times.entries()) {
                 availableTimes.push(setHours(setMinutes(new Date(), 0), value),)
               }
-              console.log(availableTimes);
         }
 
 
@@ -95,9 +143,6 @@ class Reservations extends React.Component {
                 <div className="card-body">
 
                <h5 className="card-title">When do you wish to make the reservation for?</h5>
-                        <div className="alert alert-warning" role="alert">
-                           You can only make Reservation a maximum of 31 days in advance!
-                        </div>
     
                         <DatePicker
                             selected={this.state.startDate}
@@ -108,9 +153,10 @@ class Reservations extends React.Component {
                             maxDate={addDays(new Date(), 31)}
              
                         />
-                
-
-                   
+                                <div>
+            <hr />
+            <small>You can only make Reservation a maximum of 31 days in advance!</small>
+        </div>
                 </div>
 
 
@@ -139,12 +185,12 @@ class Reservations extends React.Component {
                     <h5 class="card-title">Select from available times</h5>
                         <DatePicker
                             selected={this.state.startTime}
-                            onChange={date => this.pickTime(date)}
                             showTimeSelect
                             showTimeSelectOnly
                             minTime={setHours(setMinutes(new Date(), 0), 7)}
                             maxTime={setHours(setMinutes(new Date(), 0), 19)}
                             includeTimes={availableTimes}
+                            onChange={date => this.makeReservation(date)}
                             timeIntervals={60}
                             placeholderText="Select Time"
                             timeCaption="Time"
@@ -161,7 +207,44 @@ class Reservations extends React.Component {
             <small>Reservations only available between 7 AM - 7 PM</small>
         </div>
         </div>
- 
+:((this.state.step === 3) ) ?
+  <div className="card-body">
+
+  <h5 className="card-title">Confirmed!</h5>
+
+  <div className="row"> 
+      <div className="col col-md-5 col-sm-12 col-lg-5 col-lg-5 mb-2"> 
+      <div class="card text-center bg-success" >
+          <div className="card-header">
+              <i className="fas fa-hourglass-half"></i> Reservation Details
+          </div>
+          <ul className="list-group list-group-flush">
+              <li className="list-group-item">Location: <strong>{(this.state.location)}</strong> </li>
+              <li className="list-group-item">Date: <strong>{this.getFormattedDate(this.state.startDate)}</strong></li>
+              <li className="list-group-item">Time: <strong>{this.state.startTime.getHours()}:00</strong></li>
+          </ul>
+      </div>
+      </div>
+      <div className="col col-md-7 col-sm-12 col-lg-7 col-xl-7 "> 
+      <div className="card text-white bg-success">
+
+          <div className="card-header"><i className="fas fa-clock"></i> Thank You!</div>
+              <div class="card-body">
+              <h5 class="card-title">Your reservation has been confirmed!</h5>
+                    <h1><i className="fas fa-check"></i></h1>
+                    <Link to="/" className="btn btn-outline-success bg-white">Ok!</Link>
+              </div>
+          </div>
+      </div>
+
+  </div>
+
+  <div>
+      <hr />
+      <small>Reservations only available between 7 AM - 7 PM</small>
+  </div>
+  </div>
+
     : ((this.state.step === 1) ) ?
       
         <div className="card-body">
