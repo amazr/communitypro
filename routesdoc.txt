@@ -20,3 +20,12 @@ POST /availability {
         3.) Message is "Success: Found 4 reservations on this date". Everything worked and 4 times should have been removed from
             the times array.
 }
+
+POST /reserve {
+
+    Requires: String room, Number timeStart, Number timeEnd, Date reservedDate, String status, String name
+
+    Returns:
+        On success: JSON obj of what was saved to mongo
+        On fail: String error message 
+}

@@ -25,11 +25,11 @@ let reservationSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    reservee: {
+    name: {
         type: String,
         required: true
     }
 });
 
-const Reservation = mongoose.model("Reservation", reservationSchema);
-module.exports = Reservation;
+const reservation = mongoose.model("Reservation", reservationSchema);
+module.exports = reservation;
