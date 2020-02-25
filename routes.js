@@ -52,7 +52,6 @@ app.post('/availability', (req,res) => {
         message: ""
     };
 
-    console.log(req.body.room + " " + req.body.date);
     reservationModel.find({
         room: req.body.room,
         reservedDate: req.body.date
@@ -82,4 +81,14 @@ app.post('/reserve', (req,res) => {
       });
 });
 
+app.post('/userReservations', (req,res) => {
+    reservationModel.find({
+        name: req.body.name,
+    },
+    (err, reservations) => {
+        if (err) res.send(err);
+        else if (reservations.length === 0) res.send("No reservations found");
+        else res.send(reservations);
+    });
+});
 module.exports = app
