@@ -52,6 +52,7 @@ app.post('/availability', (req,res) => {
         message: ""
     };
 
+    console.log(req.body.room + " " + req.body.date);
     reservationModel.find({
         room: req.body.room,
         reservedDate: req.body.date
