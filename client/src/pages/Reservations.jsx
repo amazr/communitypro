@@ -88,7 +88,7 @@ class Reservations extends React.Component {
         this.state.startDate.setHours(0, 0, 0, 0);
 
         var payload={
-                room: this.state.location,
+                room: room,
                 date: this.state.startDate
             }
         
