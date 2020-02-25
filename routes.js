@@ -73,7 +73,7 @@ app.post('/availability', (req,res) => {
 app.post('/reserve', (req,res) => {
 
     let reservation = new reservationModel(req.body);
-    reservatoin.bookedDate = Date.now();
+    reservation.bookedDate = Date.now();
 
     reservation.save((err) => {
         if (err) res.send(err);
