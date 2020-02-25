@@ -64,7 +64,7 @@ app.post('/availability', (req,res) => {
                 let index = response.times.indexOf(reservation.timeStart);
                 response.times.splice(index, 1);
             });
-            response.message = ("Found " + reservations.length + " reservations on this date");
+            response.message = ("Found " + reservations.length + " other reservation(s) on this date");
         }
         res.send(response);
     });

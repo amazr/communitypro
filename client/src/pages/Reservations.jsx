@@ -142,7 +142,7 @@ class Reservations extends React.Component {
 
                 <div className="card-body">
 
-               <h5 className="card-title">When do you wish to make the reservation for?</h5>
+               <h5 className="card-title mb-4">When do you wish to make the reservation for?</h5>
     
                         <DatePicker
                             selected={this.state.startDate}
@@ -169,6 +169,10 @@ class Reservations extends React.Component {
 
         <h5 className="card-title">Okay! What time?</h5>
 
+        <div className="mb-1">
+            <small><strong>{this.state.apiResponse.message}</strong></small>
+        </div>
+
         <div className="row"> 
             <div className="col col-md-5 col-sm-12 col-lg-5 col-lg-5 mb-2"> 
             <div class="card text-center" >
@@ -185,11 +189,7 @@ class Reservations extends React.Component {
             <div className="card border-primary">
 
                 <div className="card-header"><i className="fas fa-clock"></i> Select Time</div>
-                    <div class="card-body">
-
-                    <div class="alert alert-info" role="alert">
-                        {this.state.apiResponse.message}
-                    </div>
+                    <div className="card-body">
 
                     <h5 class="card-title">Select from available times</h5>
                         <DatePicker
@@ -264,7 +264,8 @@ class Reservations extends React.Component {
 
         <h5 className="card-title">Gotcha. Which location?</h5>
             <small>For <strong>{this.getFormattedDate(this.state.startDate)}</strong></small>
-            <div className="mt-3" style={{height: 150+'px'}}>
+            <div className="mt-3" style=
+            {{height: 150+'px'}}>
                 <button type="button" value="Rec Area" onClick={(e)=> this.getAvailability("Rec Area")} className="btn btn-primary btn-lg h-100 col-3"><i className="fas fa-home"></i> <div>Rec Area</div></button>
                 <button type="button" value="Main Hall" onClick={(e)=> this.getAvailability("Main Hall")} className="btn btn-primary btn-lg ml-1 mr-1 h-100 col-3"><i className="fas fa-archway"></i> <div>Main Hall</div></button>
                 <button type="button" value="Picnic Area" onClick={(e)=> this.getAvailability("Picnic Area")} className="btn btn-primary btn-lg h-100 col-3"><i className="fas fa-campground"></i> <div>Picnic Area</div></button>
