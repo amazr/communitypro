@@ -1,12 +1,15 @@
 import React from 'react'
 import DatePicker from "react-datepicker";
-import { Link } from 'react-router-dom';
+import { Link, Redirect} from 'react-router-dom';
 import { addDays,setHours,setMinutes } from 'date-fns';
 import "react-datepicker/dist/react-datepicker.css";
 import Cookies from "js-cookie";
+import {UserContext} from '../context/UserContext';
 
 
 class Reservations extends React.Component {
+
+    static contextType = UserContext;
 
     state = {
         startDate: new Date(),
@@ -19,13 +22,10 @@ class Reservations extends React.Component {
 
      getFormattedDate(date) {
         var year = date.getFullYear();
-      
         var month = (1 + date.getMonth()).toString();
         month = month.length > 1 ? month : '0' + month;
-      
         var day = date.getDate().toString();
         day = day.length > 1 ? day : '0' + day;
-        
         return month + '/' + day + '/' + year;
       }
     
@@ -40,14 +40,12 @@ class Reservations extends React.Component {
         this.setState({startTime: time})
       }
 
-
       makeReservation(time){
 
         this.pickTime(time);
         let rentalStart = time.getHours();
         let rentalEnd = rentalStart+1;
         
-
         var payload={
                 room: this.state.location,
                 timeStart: rentalStart,
@@ -77,10 +75,8 @@ class Reservations extends React.Component {
                 } else {
                     console.log("Reservation failed");
                     console.log(this.state.apiResponse)
-                    
                 }
             });
-
       }
 
       getAvailability(room) {
@@ -111,17 +107,17 @@ class Reservations extends React.Component {
 
                 } else {
                     console.log("Availability failed");
-                    console.log(this.state.apiResponse)
-                    
+                    console.log(this.state.apiResponse) 
                 }
             });
     }
 
     render() {
 
-
+        if (this.context.user === undefined) {
+            return <Redirect to='/login' />
+        }
         const availableTimes = [];
-
         // Create a list of date objects that we can pass into time picker
         if (this.state.times !== null) 
         {
@@ -129,7 +125,6 @@ class Reservations extends React.Component {
                 availableTimes.push(setHours(setMinutes(new Date(), 0), value),)
               }
         }
-
 
         return (
             <div className = "container mt-3">
@@ -140,8 +135,7 @@ class Reservations extends React.Component {
         { (this.state.step === 0) 
         ? 
 
-                <div className="card-body">
-
+            <div className="card-body">
                <h5 className="card-title mb-4">When do you wish to make the reservation for?</h5>
     
                         <DatePicker
@@ -151,7 +145,6 @@ class Reservations extends React.Component {
                             minDate={new Date()}
                             inline
                             maxDate={addDays(new Date(), 31)}
-             
                         />
 
             <div className="mt-4">
@@ -177,11 +170,11 @@ class Reservations extends React.Component {
             <div className="col col-md-5 col-sm-12 col-lg-5 col-lg-5 mb-2"> 
             <div class="card text-center" >
                 <div className="card-header">
-                    <i className="fas fa-hourglass-half"></i> Reservation Details
+                    <i class="fas fa-info-circle"></i> Reservation Details
                 </div>
                 <ul className="list-group list-group-flush">
-                    <li className="list-group-item">Location: <strong>{(this.state.location)}</strong> </li>
-                    <li className="list-group-item">Date: <strong>{this.getFormattedDate(this.state.startDate)}</strong></li>
+                    <li className="list-group-item"><i class="fas fa-map-marked-alt"></i> Location: <strong>{(this.state.location)}</strong> </li>
+                    <li className="list-group-item"><i class="fas fa-calendar-check"></i> Date: <strong>{this.getFormattedDate(this.state.startDate)}</strong></li>
                 </ul>
             </div>
             </div>
@@ -229,12 +222,12 @@ class Reservations extends React.Component {
       <div className="col col-md-5 col-sm-12 col-lg-5 col-lg-5 mb-2"> 
       <div class="card text-center bg-success" >
           <div className="card-header text-white">
-              <i className="fas fa-hourglass-half"></i> Reservation Details
+          <i class="fas fa-info-circle"></i> Reservation Details
           </div>
           <ul className="list-group list-group-flush">
-              <li className="list-group-item">Location: <strong>{(this.state.location)}</strong>  </li>
-              <li className="list-group-item">Date: <strong>{this.getFormattedDate(this.state.startDate)}</strong></li>
-              <li className="list-group-item">Time: <strong>{this.state.startTime.getHours()}:00</strong></li>
+              <li className="list-group-item"><i class="fas fa-map-marked-alt"></i> Location: <strong>{(this.state.location)}</strong>  </li>
+              <li className="list-group-item"><i class="fas fa-calendar-check"></i> Date: <strong>{this.getFormattedDate(this.state.startDate)}</strong></li>
+              <li className="list-group-item"><i class="far fa-clock"></i> Time: <strong>{this.state.startTime.getHours()}:00</strong></li>
           </ul>
       </div>
       </div>

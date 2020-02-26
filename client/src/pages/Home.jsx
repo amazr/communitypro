@@ -8,10 +8,10 @@ class Home extends React.Component {
 
     static contextType = UserContext;
 
-    constructor(props) {
-        super(props);
+    constructor(props,context) {
+        super(props,context);
         this.state = { apiResponse: "",
-            user: Cookies.get("username"),
+            user: this.context.user,
             reservations: null
         };
     }
@@ -101,7 +101,7 @@ class Home extends React.Component {
 
         const madeReservationsDate = [];
 
-
+        console.log("Home page")
         // Create a list of date objects that we can pass into time picker
         if (this.state.reservations !== null) 
         {
@@ -112,6 +112,7 @@ class Home extends React.Component {
         }
 
         if (this.context.user === undefined) {
+            console.log("Not logged in redirecting")
             return <Redirect to='/login' />
         }
 

@@ -12,16 +12,17 @@ import Login from '../pages/Login';
 import Reservations from '../pages/Reservations';
 import {UserContextProvider} from '../context/UserContext';
 import Cookies from "js-cookie";
+import Auth from "../context/Auth";
 
 
 const Main = () => {
 
     let sessionCookie = Cookies.get("username");
     
-    
+    console.log(sessionCookie+" COOKI");
     const ProtectedRoute = ({ component: Component, ...rest }) => (
         <Route {...rest} render={(props) => (
-            sessionCookie != null
+            sessionCookie != undefined || Auth.isAuthenticated === true
             ? <Component {...props} />
             : <Redirect to='/login' />
         )} />
@@ -35,11 +36,8 @@ const Main = () => {
                 <ProtectedRoute exact path="/" component={Home}/>
                 <ProtectedRoute path="/reservations" component={Reservations}/>
                 <Route path="/login" component={Login}/>
+                <Footer />
             </UserContextProvider>
-            
-            
-            
-            <Footer />
         </div>
     </Router>
   )

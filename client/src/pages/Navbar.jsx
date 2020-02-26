@@ -3,6 +3,7 @@ import {UserContext} from '../context/UserContext';
 import * as Cookies from "js-cookie";
 import { useContext } from 'react';
 import Auth from '../context/Auth';
+import { Link } from 'react-router-dom';
 
 function Navbar(props) {
 
@@ -23,9 +24,9 @@ function Navbar(props) {
       if (user === undefined) {
         return (
             <nav className="navbar navbar-expand-lg navbar-dark bg-info justify-content-between">
-                <a className="navbar-brand" href="#">
+                <Link to="/" className="navbar-brand" >
                     <i className="fas fa-calendar-day"></i> Best Community Service
-                </a>
+                </Link>
                 <button type="button" className="btn btn-info btn-sm"><i className="fas fa-sign-out-alt"></i> Login</button>
             </nav>
         );
@@ -34,9 +35,9 @@ function Navbar(props) {
 
         return (
             <nav className="navbar navbar-expand-lg navbar-dark bg-info justify-content-between">
-                <a className="navbar-brand" href="#">
+                <Link className="navbar-brand" to="/">
                     <i className="fas fa-calendar-day"></i> Best Community Service
-                </a>
+                </Link>
                 <button type="button" onClick={logout} className="btn btn-info btn-sm"><i className="fas fa-sign-out-alt"></i> Logout</button>
             </nav>
             );

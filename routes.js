@@ -15,6 +15,7 @@ app.post('/login', (req,res) => {
         username: "",
         message: ""
     };
+    console.log(state);
 
     userModel.findOne({
         username: req.body.username,

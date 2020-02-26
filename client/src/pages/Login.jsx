@@ -59,6 +59,7 @@ class Login extends React.Component {
     render() {
 
         if (this.state.authenticated === true) {
+            console.log("LOGGED IN")
             return <Redirect to='/' />
         }
 
