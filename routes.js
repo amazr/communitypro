@@ -137,6 +137,26 @@ app.post('/rent', (req,res) => {
     });
 });
 
+app.post('/rentalStatus', (req,res) => {
+    let response = {
+        message: ""
+    };
+
+    reservationModel.findOne({
+        _id: req.body.id
+    },
+    (err, reservation) => {
+        if (err) response.message = "Failed to add rental to reservation";
+        else {
+            response.message = "Reservation successfully found";
+            response.chairs = reservation.chairs;
+            response.signs = reservation.signs;
+            response.catered = reservation.catered;
+        }
+        res.send(response);
+    });
+});
+
 app.post('/donate', (req,res) => {
     let response = {
         message: ""
