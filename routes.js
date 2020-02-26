@@ -151,7 +151,7 @@ app.post('/rentalStatus', (req,res) => {
         _id: req.body.id
     },
     (err, reservation) => {
-        if (err || !reservation) response.message = "Failed to add rental to reservation";
+        if (err || !reservation) response.message = "Failed find rental";
         else {
             response.message = "Reservation successfully found";
             response.chairs = reservation.chairs;
