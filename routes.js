@@ -97,13 +97,15 @@ app.post('/cancelReservation', (req,res) => {
     let response = {
         message: ""
     };
-
+    console.log("Deleting: " + req.body.id);
     reservationModel.deleteOne({
         _id: req.body.id
     },
     (err) => {
         if (err) response.message = "Failed to cancel reservation";
         else response.message = "Reservation successfully canceled";
+        console.log("Was there an error?: " + err);
+        console.log("Sending in response: " + JSON.stringify(response));
         res.send(response);
     });
 });
@@ -130,6 +132,15 @@ app.post('/donate', (req,res) => {
     let response = {
         message: ""
     };
+
+    userModel.updateOne({
+        username: req.body.username
+    },
+    (err) => {
+        if (err) response.message = "Failed to cancel reservation";
+        else response.message = "Reservation successfully canceled";
+        res.send(response);
+    });
 
 
 });
