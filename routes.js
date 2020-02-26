@@ -131,8 +131,8 @@ app.post('/rent', (req,res) => {
         catered: req.body.catered
     },
     (err) => {
-        if (err) response.message = "Failed to add rental to reservation";
-        else response.message = "Reservation successfully updated";
+        if (err) response.message = "Failed to Book Rental";
+        else response.message = "Rental Successfully booked";
         res.send(response);
     });
 });
