@@ -83,13 +83,20 @@ app.post('/reserve', (req,res) => {
 });
 
 app.post('/userReservations', (req,res) => {
+    let response = {
+        message: ""
+    };
+
     reservationModel.find({
         name: req.body.name,
     },
     (err, reservations) => {
-        if (err) res.send(err);
-        else if (reservations.length === 0) res.send("No reservations found");
-        else res.send(reservations);
+        if (err || reservations.length === 0) response.message = "No reservations found";
+        else {
+            response = reservations;
+            response.message = "Successfully found all user reservations";
+        }
+        res.send(response);
     });
 });
 
@@ -121,7 +128,7 @@ app.post('/rent', (req,res) => {
         equipment: req.body.equipment,
         quantity: req.body.quantity
     },
-    (err, reservation) => {
+    (err) => {
         if (err) response.message = "Failed to update reservation with rental information";
         else response.message = "Reservation successfully updated";
         res.send(response);
