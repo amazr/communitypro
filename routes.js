@@ -139,7 +139,10 @@ app.post('/rent', (req,res) => {
 
 app.post('/rentalStatus', (req,res) => {
     let response = {
-        message: ""
+        message: "",
+        chairs: null,
+        signs: null,
+        catered: null
     };
 
     reservationModel.findOne({
