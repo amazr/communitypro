@@ -10,6 +10,7 @@ import Footer from '../pages/Footer';
 import Navbar from '../pages/Navbar';
 import Login from '../pages/Login';
 import Reservations from '../pages/Reservations';
+import Rentals from '../pages/Rentals';
 import {UserContextProvider} from '../context/UserContext';
 import Cookies from "js-cookie";
 import Auth from "../context/Auth";
@@ -35,6 +36,7 @@ const Main = () => {
                 <Navbar />
                 <ProtectedRoute exact path="/" component={Home}/>
                 <ProtectedRoute path="/reservations" component={Reservations}/>
+                <ProtectedRoute path="/rental" component={Rentals}/>
                 <Route path="/login" component={Login}/>
                 <Footer />
             </UserContextProvider>
