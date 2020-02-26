@@ -126,8 +126,10 @@ app.post('/rent', (req,res) => {
     reservationModel.updateOne({
         _id: req.body.id
     }, {
-        equipment: req.body.equipment,
-        quantity: req.body.quantity
+        $push: { equipment: {
+            item: req.body.item,
+            quantity: req.body.quantity
+        }} 
     },
     (err) => {
         if (err) response.message = "Failed to update reservation with rental information";
