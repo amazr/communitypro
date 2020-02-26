@@ -1,8 +1,5 @@
 import React from 'react'
-import DatePicker from "react-datepicker";
 import { Link, Redirect} from 'react-router-dom';
-import { addDays,setHours,setMinutes } from 'date-fns';
-import "react-datepicker/dist/react-datepicker.css";
 import Cookies from "js-cookie";
 import {UserContext} from '../context/UserContext';
 
@@ -19,7 +16,6 @@ class Rentals extends React.Component {
         chairs: null,
         signs: null,
         cater: null,
-        message: null
       };
 
      getFormattedDate(date) {
@@ -32,7 +28,7 @@ class Rentals extends React.Component {
       }
 
       handleCater () {
-          if (this.state.cater != true) {
+          if (this.state.cater !== true) {
             this.setState({
                 cater: true
             });

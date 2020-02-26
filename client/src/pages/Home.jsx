@@ -23,7 +23,7 @@ class Home extends React.Component {
 
 
     handleAnon () {
-        if (this.state.anon != true) {
+        if (this.state.anon !== true) {
           this.setState({
               anon: true
           });
@@ -212,7 +212,7 @@ class Home extends React.Component {
 
         if (this.state.donations !== null) 
         {
-            for (const [index, value] of this.state.donations.entries()) {
+            for (const [value] of this.state.donations.entries()) {
                     donations.push(<li class="list-group-item list-group-item-success">+${value.amount}.00 {(value.anon === true)?<i class="fas fa-user-secret"></i>:null}</li>
                 )
               }
@@ -315,7 +315,7 @@ class Home extends React.Component {
                             <i className="fas fa-donate"></i> Donate
                         </div>
                         <div className="card-body">
-                        { (this.state.donations === null) 
+                        { (this.state.donations === null || this.state.donations.length === 0) 
                         ? 
                             <div>
                                 <h5 className="card-title mt-5">Your donation helps us serve the community</h5>
@@ -331,7 +331,7 @@ class Home extends React.Component {
                         }
             
                         <div className="card bg-light col-12">
-                            <div className="custom-control custom-checkbox text-left offset-1 col-8">
+                            <div className="custom-control custom-checkbox text-right col-12">
                                 <input type="checkbox" checked = {this.state.anon} onChange = {() => this.handleAnon()} className="custom-control-input" id="customControlValidation1" />
                                 <label className="custom-control-label" for="customControlValidation1" ><i class="fas fa-user-secret"></i> Anonymous</label>
                             </div>

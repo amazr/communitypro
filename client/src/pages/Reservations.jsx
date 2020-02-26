@@ -121,7 +121,7 @@ class Reservations extends React.Component {
         // Create a list of date objects that we can pass into time picker
         if (this.state.times !== null) 
         {
-            for (const [index, value] of this.state.times.entries()) {
+            for (const [value] of this.state.times.entries()) {
                 availableTimes.push(setHours(setMinutes(new Date(), 0), value),)
               }
         }

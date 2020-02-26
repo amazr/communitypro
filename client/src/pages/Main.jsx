@@ -23,7 +23,7 @@ const Main = () => {
     console.log(sessionCookie+" COOKI");
     const ProtectedRoute = ({ component: Component, ...rest }) => (
         <Route {...rest} render={(props) => (
-            sessionCookie != undefined || Auth.isAuthenticated === true
+            sessionCookie !== undefined || Auth.isAuthenticated === true
             ? <Component {...props} />
             : <Redirect to='/login' />
         )} />
