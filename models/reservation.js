@@ -29,10 +29,8 @@ let reservationSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    equipment: [{
-        item: String,
-        quantity: Number
-    }],
+    chairs: Number,
+    signs: Number,
     catered: Boolean
 });
 

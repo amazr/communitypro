@@ -126,13 +126,12 @@ app.post('/rent', (req,res) => {
     reservationModel.updateOne({
         _id: req.body.id
     }, {
-        $push: { equipment: {
-            item: req.body.item,
-            quantity: req.body.quantity
-        }} 
+        chairs: req.body.chairs,
+        signs: req.body.signs,
+        catered: req.body.catered
     },
     (err) => {
-        if (err) response.message = "Failed to update reservation with rental information";
+        if (err) response.message = "Failed to add rental to reservation";
         else response.message = "Reservation successfully updated";
         res.send(response);
     });
