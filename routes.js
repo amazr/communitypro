@@ -162,6 +162,7 @@ app.post('/rentalStatus', (req,res) => {
     });
 });
 
+
 app.post('/donate', (req,res) => {
     let response = {
         message: ""
@@ -179,7 +180,7 @@ app.post('/donate', (req,res) => {
         }
     },
     (err, update) => {
-        if (err || update.nModified === 0) response.message = "No donations found";
+        if (err || update.nModified === 0) response.message = "Donation was not accepted";
         else response.message = "Reservation successfully canceled";
         res.send(response);
     });
@@ -194,10 +195,14 @@ app.post('/getDonations', (req,res) => {
     userModel.find({
         username: req.body.username
     },
-    (err, donations) => {
+    (err, users) => {
         if (err || donations.length === 0) response.message = "No donations found";
         else {
-            response.donations = donations;
+            users.forEach(user => {
+                user.donations.forEach(donation => {
+                    response.donations.push(donation);
+                });
+            });
             response.message = "Successfully Found Donations"
         }
         res.send(response);
