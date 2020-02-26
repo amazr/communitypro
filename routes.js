@@ -93,7 +93,7 @@ app.post('/userReservations', (req,res) => {
     (err, reservations) => {
         if (err || reservations.length === 0) response.message = "No reservations found";
         else {
-            response = reservations;
+            response.reservations = reservations;
             response.message = "Successfully found all user reservations";
         }
         res.send(response);
