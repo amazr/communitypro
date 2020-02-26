@@ -169,14 +169,39 @@ app.post('/donate', (req,res) => {
 
     userModel.updateOne({
         username: req.body.username
+    }, {
+        $push: {
+            donations: {
+                amount: req.body.amount,
+                date: Date.now(),
+                anon: req.body.anon
+            }
+        }
     },
-    (err) => {
-        if (err) response.message = "Failed to cancel reservation";
+    (err, update) => {
+        if (err || update.nModified === 0) response.message = "No donations found";
         else response.message = "Reservation successfully canceled";
         res.send(response);
     });
+});
 
+app.post('/getDonations', (req,res) => {
+    let response = {
+        message: "",
+        donations: []
+    }
 
+    userModel.find({
+        username: req.body.username
+    },
+    (err, donations) => {
+        if (err || donations.length === 0) response.message = "No donations found";
+        else {
+            response.donations = donations;
+            response.message = "Successfully Found Donations"
+        }
+        res.send(response);
+    });
 });
 
 module.exports = app
