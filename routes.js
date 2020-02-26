@@ -180,6 +180,7 @@ app.post('/donate', (req,res) => {
         }
     },
     (err, update) => {
+        console.log(err, update);
         if (err || update.nModified === 0) response.message = "Donation was not accepted";
         else response.message = "Reservation successfully canceled";
         res.send(response);
