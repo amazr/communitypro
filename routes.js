@@ -133,6 +133,7 @@ app.post('/rent', (req,res) => {
     (err, update) => {
         if (err || update.nModified == 0) response.message = "Failed to Book Rental";
         else response.message = "Rental Successfully booked";
+        console.log(update);
         res.send(response);
     });
 });
