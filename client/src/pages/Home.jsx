@@ -37,6 +37,7 @@ class Home extends React.Component {
                 } else {
                     console.log("Cancellation failed");
                     console.log(this.state.apiResponse)
+                    this.getReservations();
                     
                 }
             });
@@ -71,15 +72,15 @@ class Home extends React.Component {
             .then(res => { 
                 //this.setState({ apiResponse: res });
 
-                if (res !== undefined)
+                if (res.reservations.length !== 0)
                 {
                     console.log("Reservations recieved");
                     console.log(res);
-                    this.setState({reservations: res})
+                    this.setState({reservations: res.reservations})
 
                 } else {
-                    console.log("Reservations failed");
-                    console.log(this.state.apiResponse)
+                    console.log("No reservations");
+                    this.setState({reservations: null})
                     
                 }
             });
@@ -101,13 +102,16 @@ class Home extends React.Component {
 
         const madeReservationsDate = [];
 
-        console.log("Home page")
         // Create a list of date objects that we can pass into time picker
         if (this.state.reservations !== null) 
         {
             for (const [index, value] of this.state.reservations.entries()) {
-                madeReservationsDate.push(<tr key={index}><td>{this.getFormattedDate(new Date(value.reservedDate))} {value.timeStart+":00"}</td><td>{value.room}</td><td><Link to="/" className="text-danger" onClick={(e)=> this.cancelReservation(value._id)} ><i class="fas fa-ban"></i></Link></td></tr>)
-
+                madeReservationsDate.push(<tr key={index}><td><Link to="/" className="text-danger" onClick={(e)=> this.cancelReservation(value._id)} ><i class="fas fa-ban"></i></Link> {this.getFormattedDate(new Date(value.reservedDate))} {value.timeStart+":00"}</td><td>{value.room}</td><td><Link to={{
+                    pathname: "/rental",
+                    state: { 
+                        r: value
+                    }
+                  }} className="badge badge-info" >Services</Link></td></tr>)
               }
         }
 
@@ -144,13 +148,13 @@ class Home extends React.Component {
                 <div className="col-sm-12 col-md-6 col-lg-6">
                     <div className="card shadow text-center mt-3">
                         <div className="card-header">
-                            <i className="fas fa-calendar-day"></i> Reservations / Rentals
+                            <i className="fas fa-calendar-day"></i> Reservations
                         </div>
                         <div className="card-body">
 
                     { (this.state.reservations === "No reservations found" || this.state.reservations === null) 
                     ? 
-                        <div>
+                        <div className="mb-5">
                             <h5 className="card-title">Nothing to see here...</h5>
                             <p className="card-text">Your reservations will appear here. So empty!</p>
                         </div>
@@ -162,7 +166,7 @@ class Home extends React.Component {
                         <tr className="">
                             <th scope="col">When</th>
                             <th scope="col">Where</th>
-                            <th scope="col">Cancel</th>
+                            <th scope="col">Options</th>
                         </tr>
                         </thead>
                         <tbody>

@@ -130,7 +130,7 @@ class Reservations extends React.Component {
             <div className = "container mt-3">
                 <div className="card shadow text-center mt-3">
                     <div className="card-header">
-                        <i className="fas fa-calendar-day"></i> Reservations / Rentals
+                        <i className="fas fa-calendar-day"></i> Reservations
                     </div>
         { (this.state.step === 0) 
         ? 
