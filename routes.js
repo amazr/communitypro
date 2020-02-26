@@ -98,7 +98,7 @@ app.post('/cancelReservation', (req,res) => {
         message: ""
     };
 
-    resrvationModel.deleteOne({
+    reservationModel.deleteOne({
         _id: req.body.id
     },
     (err) => {
@@ -124,6 +124,14 @@ app.post('/rent', (req,res) => {
         else response.message = "Reservation successfully updated";
         res.send(response);
     });
+});
+
+app.post('/donate', (req,res) => {
+    let response = {
+        message: ""
+    };
+
+
 });
 
 module.exports = app
