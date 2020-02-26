@@ -15,8 +15,8 @@ class Home extends React.Component {
             apiResponse: "",
             user: this.context.user,
             reservations: null,
-            donations: null,
-            amount: null,
+            donations: [],
+            amount: "",
             anon: false
         };
     }
@@ -117,7 +117,7 @@ class Home extends React.Component {
       getDonation() {
 
         let payload={
-                name: this.state.user
+                username: this.state.user
             }
         
         console.log("getDonation() => "+payload.name);
@@ -190,18 +190,19 @@ class Home extends React.Component {
     componentWillMount() {
         this.callAPI();
         this.getReservations();
+        this.getDonation();
     }
 
     render() {
 
         const madeReservationsDate = [];
-        const donations = [];
+        let donations = [];
 
         // Create a list of date objects that we can pass into time picker
         if (this.state.reservations !== null) 
         {
             for (const [index, value] of this.state.reservations.entries()) {
-                madeReservationsDate.push(<tr key={index}><td><Link to="/" className="text-danger" onClick={(e)=> this.cancelReservation(value._id)} ><i class="fas fa-ban"></i></Link> {this.getFormattedDate(new Date(value.reservedDate))} {value.timeStart+":00"}</td><td>{value.room}</td><td><Link to={{
+                madeReservationsDate.push(<tr key={index}><td><Link to="/" className="text-danger" onClick={(e)=> this.cancelReservation(value._id)} ><i className="fas fa-ban"></i></Link> {this.getFormattedDate(new Date(value.reservedDate))} {value.timeStart+":00"}</td><td>{value.room}</td><td><Link to={{
                     pathname: "/rental",
                     state: { 
                         r: value
@@ -212,11 +213,38 @@ class Home extends React.Component {
 
         if (this.state.donations !== null) 
         {
-            for (const [value] of this.state.donations.entries()) {
-                    donations.push(<li class="list-group-item list-group-item-success">+${value.amount}.00 {(value.anon === true)?<i class="fas fa-user-secret"></i>:null}</li>
+            for (const [index, value] of this.state.donations.entries()) {
+                    donations.push(
+                    <li class="list-group-item list-group-item-success">
+                        <div className="row">
+                            <div className="offset-1 col-1">
+                                <h3><i className="fas fa-coins"></i></h3>
+                            </div>
+                            <div className="col-8">
+                                <h5> ${value.amount}.00</h5>
+                            </div>
+                            <div className="col-1">
+                                {(value.anon === true)?<h3><i className="fas fa-user-secret"></i></h3>:null}
+                            </div>
+                        </div>
+                    </li>
                 )
-              }
+            }
+
+            
+            
+            //Prune donations
+            if (donations.length > 5)
+            {
+                donations = donations.slice(Math.max(donations.length - 5, 0));
+                donations.unshift(<li class="list-group-item list-group-item-light text-center">Showing last 5</li>)
+            }
+            
+            
         }
+
+
+
 
         if (this.context.user === undefined) {
             console.log("Not logged in redirecting")
@@ -228,11 +256,11 @@ class Home extends React.Component {
 
             { (this.state.apiResponse !== "") 
                 ? 
-                    <div class="alert alert-success" role="alert">
+                    <div className="alert alert-success" role="alert">
                         <i className="fas fa-cogs"></i> {this.state.apiResponse}
                     </div>
                 :
-                    <div class="alert alert-danger" role="alert">
+                    <div className="alert alert-danger" role="alert">
                         <i className="fas fa-plug"></i> No Connection!
                     </div>
             }
@@ -324,7 +352,7 @@ class Home extends React.Component {
                         
                         :
 
-                            <ul class="list-group">
+                            <ul className="list-group mb-2">
                                 {donations}
                             </ul>
 
@@ -333,7 +361,7 @@ class Home extends React.Component {
                         <div className="card bg-light col-12">
                             <div className="custom-control custom-checkbox text-right col-12">
                                 <input type="checkbox" checked = {this.state.anon} onChange = {() => this.handleAnon()} className="custom-control-input" id="customControlValidation1" />
-                                <label className="custom-control-label" for="customControlValidation1" ><i class="fas fa-user-secret"></i> Anonymous</label>
+                                <label className="custom-control-label" for="customControlValidation1"><i className="fas fa-user-secret"></i> Anonymous</label>
                             </div>
                             <div className="input-group mb-3 col-12">
 
