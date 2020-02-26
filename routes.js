@@ -9,13 +9,12 @@ app.get('/', (req,res) => {
 
 //POSTS
 app.post('/login', (req,res) => {
-    console.log("Logging in...");
+
     let state = {
         isLoggedIn: false,
         username: "",
         message: ""
     };
-    console.log(state);
 
     userModel.findOne({
         username: req.body.username,
@@ -95,7 +94,7 @@ app.post('/userReservations', (req,res) => {
         if (err || reservations.length === 0) response.message = "No reservations found";
         else {
             response.reservations = reservations;
-            response.message = "Successfully found all user reservations";
+            response.message = "Successfully found reservations";
         }
         res.send(response);
     });
@@ -105,15 +104,12 @@ app.post('/cancelReservation', (req,res) => {
     let response = {
         message: ""
     };
-    console.log("Deleting: " + req.body.id);
     reservationModel.deleteOne({
         _id: req.body.id
     },
     (err) => {
         if (err) response.message = "Failed to cancel reservation";
         else response.message = "Reservation successfully canceled";
-        console.log("Was there an error?: " + err);
-        console.log("Sending in response: " + JSON.stringify(response));
         res.send(response);
     });
 });
@@ -133,8 +129,6 @@ app.post('/rent', (req,res) => {
     (err, update) => {
         if (err || update.nModified == 0) response.message = "Failed to Book Rental";
         else response.message = "Rental Successfully booked";
-        console.log("Searching for... " + req.body.id);
-        console.log(update);
         res.send(response);
     });
 });
@@ -153,7 +147,7 @@ app.post('/rentalStatus', (req,res) => {
     (err, reservation) => {
         if (err || !reservation) response.message = "Failed find rental";
         else {
-            response.message = "Reservation successfully found";
+            response.message = "Rental Information Successfully Found";
             response.chairs = reservation.chairs;
             response.signs = reservation.signs;
             response.catered = reservation.catered;
@@ -182,7 +176,7 @@ app.post('/donate', (req,res) => {
     (err, update) => {
         console.log(err, update);
         if (err || update.nModified === 0) response.message = "Donation was not accepted";
-        else response.message = "Reservation successfully canceled";
+        else response.message = "Donation was accepted";
         res.send(response);
     });
 });
