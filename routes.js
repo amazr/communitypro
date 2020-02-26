@@ -84,6 +84,7 @@ app.post('/reserve', (req,res) => {
 
 app.post('/userReservations', (req,res) => {
     let response = {
+        reservations: [],
         message: ""
     };
 
