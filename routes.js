@@ -131,9 +131,8 @@ app.post('/rent', (req,res) => {
         catered: req.body.catered
     },
     (err, update) => {
-        if (err) response.message = "Failed to Book Rental";
+        if (err || update.nModified == 0) response.message = "Failed to Book Rental";
         else response.message = "Rental Successfully booked";
-        console.log(update);
         res.send(response);
     });
 });
