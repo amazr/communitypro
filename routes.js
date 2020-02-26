@@ -130,9 +130,10 @@ app.post('/rent', (req,res) => {
         signs: req.body.signs,
         catered: req.body.catered
     },
-    (err) => {
+    (err, update) => {
         if (err) response.message = "Failed to Book Rental";
         else response.message = "Rental Successfully booked";
+        console.log(update);
         res.send(response);
     });
 });
