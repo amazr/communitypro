@@ -99,11 +99,29 @@ app.post('/cancelReservation', (req,res) => {
     };
 
     resrvationModel.deleteOne({
-        _id: req.body.id,
+        _id: req.body.id
     },
     (err) => {
         if (err) response.message = "Failed to cancel reservation";
-        else response.message = "Reservation successfully canceled"
+        else response.message = "Reservation successfully canceled";
+        res.send(response);
+    });
+});
+
+app.post('/rent', (req,res) => {
+    let response = {
+        message: ""
+    };
+
+    reservationModel.updateOne({
+        _id: req.body.id
+    }, {
+        equipment: req.body.equipment,
+        quantity: req.body.quantity
+    },
+    (err, reservation) => {
+        if (err) response.message = "Failed to update reservation with rental information";
+        else response.message = "Reservation successfully updated";
         res.send(response);
     });
 });
