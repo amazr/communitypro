@@ -28,7 +28,12 @@ let reservationSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
-    }
+    },
+    equipment: [{
+        item: String,
+        quantity: Number
+    }],
+    catered: Boolean
 });
 
 const reservation = mongoose.model("Reservation", reservationSchema);

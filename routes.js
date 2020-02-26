@@ -92,4 +92,20 @@ app.post('/userReservations', (req,res) => {
         else res.send(reservations);
     });
 });
+
+app.post('/cancelReservation', (req,res) => {
+    let response = {
+        message: ""
+    };
+
+    resrvationModel.deleteOne({
+        _id: req.body.id,
+    },
+    (err) => {
+        if (err) response.message = "Failed to cancel reservation";
+        else response.message = "Reservation successfully canceled"
+        res.send(response);
+    });
+});
+
 module.exports = app
