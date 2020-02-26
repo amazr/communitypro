@@ -14,9 +14,27 @@ class Home extends React.Component {
         this.state = { 
             apiResponse: "",
             user: this.context.user,
-            reservations: null
+            reservations: null,
+            donations: null,
+            amount: null,
+            anon: false
         };
     }
+
+
+    handleAnon () {
+        if (this.state.anon != true) {
+          this.setState({
+              anon: true
+          });
+        } else {
+          this.setState({
+              anon: false
+          });         
+        }
+    }
+
+
     cancelReservation(id) {
         let payload={
             id: id
@@ -43,19 +61,93 @@ class Home extends React.Component {
                     
                 }
             });
-
     }
+
+    donate() {
+
+        if (this.state.anon === null)
+        {
+            this.setState({
+                anon: false
+              });
+        }
+
+
+        let payload={
+            username: this.state.user,
+            amount: this.state.amount,
+            anon: this.state.anon
+        }
+
+        fetch("http://localhost:8080/donate",{
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers:{ 'Content-Type': 'application/json' }
+            })
+            .then(res => res.json())
+            .then(res => { 
+                //this.setState({ apiResponse: res });
+
+                if (res !== undefined)
+                {
+                    console.log("donation recieved");
+                    console.log(res);
+                    this.setState({ amount: '', anon:false });
+                    this.getDonation();
+
+                } else {
+                    console.log("donation failed");
+                    console.log(this.state.apiResponse)
+                    //this.getReservations();
+                    
+                }
+            });
+    }
+
     getFormattedDate(date) {
         let year = date.getFullYear();
-      
         let month = (1 + date.getMonth()).toString();
         month = month.length > 1 ? month : '0' + month;
-      
         let day = date.getDate().toString();
         day = day.length > 1 ? day : '0' + day;
-        
         return month + '/' + day + '/' + year;
       }
+
+
+      getDonation() {
+
+        let payload={
+                name: this.state.user
+            }
+        
+        console.log("getDonation() => "+payload.name);
+
+        fetch("http://localhost:8080/getDonations",{
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers:{ 'Content-Type': 'application/json' }
+            })
+            .then(res => res.json())
+            .then(res => { 
+                //this.setState({ apiResponse: res });
+
+                if (res !== undefined)
+                {
+                    console.log("donations recieved");
+                    console.log(res);
+                    this.setState({donations: res.donations})
+
+                } else {
+                    console.log("No reservations");
+                    //his.setState({reservations: null})
+                    
+                }
+            });
+    }
+    
+
+
+
 
     getReservations() {
 
@@ -103,6 +195,7 @@ class Home extends React.Component {
     render() {
 
         const madeReservationsDate = [];
+        const donations = [];
 
         // Create a list of date objects that we can pass into time picker
         if (this.state.reservations !== null) 
@@ -117,6 +210,14 @@ class Home extends React.Component {
               }
         }
 
+        if (this.state.donations !== null) 
+        {
+            for (const [index, value] of this.state.donations.entries()) {
+                    donations.push(<li class="list-group-item list-group-item-success">+${value.amount}.00 {(value.anon === true)?<i class="fas fa-user-secret"></i>:null}</li>
+                )
+              }
+        }
+
         if (this.context.user === undefined) {
             console.log("Not logged in redirecting")
             return <Redirect to='/login' />
@@ -125,7 +226,7 @@ class Home extends React.Component {
         return (
             <div className = "container col-12 mt-3">
 
-            { (this.state.apiResponse !== undefined) 
+            { (this.state.apiResponse !== "") 
                 ? 
                     <div class="alert alert-success" role="alert">
                         <i className="fas fa-cogs"></i> {this.state.apiResponse}
@@ -138,7 +239,7 @@ class Home extends React.Component {
 
 
 
-    <div className="">
+            <div className="">
                     <div className="card shadow text-center mb-3 mt-3">
                         <div className="card-header">
                             <i className="fas fa-calendar-day"></i> Reservations
@@ -186,7 +287,7 @@ class Home extends React.Component {
 
 
     
-            <div className="row">
+            <div className="row mb-5">
 
             <div className="col-sm-12 col-md-6 col-lg-6">
                 <div className="card shadow text-center bg-light mt-3" >
@@ -214,25 +315,38 @@ class Home extends React.Component {
                             <i className="fas fa-donate"></i> Donate
                         </div>
                         <div className="card-body">
-                       
+                        { (this.state.donations === null) 
+                        ? 
+                            <div>
                                 <h5 className="card-title mt-5">Your donation helps us serve the community</h5>
                                 <p className="card-text mb-5">Please consider donating!</p>
-                         
-                        <div class="custom-control custom-checkbox text-right">
-                            <input type="checkbox" checked = {this.state.cater} className="custom-control-input" id="customControlValidation1" />
-                            <label className="custom-control-label" for="customControlValidation1" ><i class="fas fa-user-secret"></i> Anonymous</label>
-                        </div>
-                        <div class="input-group mb-3">
+                            </div>
+                        
+                        :
 
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">$</span>
+                            <ul class="list-group">
+                                {donations}
+                            </ul>
+
+                        }
+            
+                        <div className="card bg-light col-12">
+                            <div className="custom-control custom-checkbox text-left offset-1 col-8">
+                                <input type="checkbox" checked = {this.state.anon} onChange = {() => this.handleAnon()} className="custom-control-input" id="customControlValidation1" />
+                                <label className="custom-control-label" for="customControlValidation1" ><i class="fas fa-user-secret"></i> Anonymous</label>
                             </div>
-                            <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" />
-                            <div class="input-group-append">
-                                <span class="input-group-text">.00</span>
-                            </div>
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button" id="button-addon2">Donate</button>
+                            <div className="input-group mb-3 col-12">
+
+                                <div className="input-group-prepend">
+                                    <span className="input-group-text">$</span>
+                                </div>
+                                <input type="text" className="form-control" value={this.state.amount} onChange = {(event) => this.setState({amount:event.target.value})} aria-label="Amount (to the nearest dollar)" required />
+                                <div className="input-group-append">
+                                    <span className="input-group-text">.00</span>
+                                </div>
+                                <div className="input-group-append">
+                                    <button className="btn btn-outline-secondary" onClick={() => this.donate()} type="button" id="button-addon2">Donate</button>
+                                </div>
                             </div>
                         </div>
                         
