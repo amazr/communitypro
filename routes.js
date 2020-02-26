@@ -191,7 +191,7 @@ app.post('/getDonations', (req,res) => {
         username: req.body.username
     },
     (err, users) => {
-        if (err || donations.length === 0) response.message = "No donations found";
+        if (err || users.length === 0) response.message = "No donations found";
         else {
             users.forEach(user => {
                 user.donations.forEach(donation => {
