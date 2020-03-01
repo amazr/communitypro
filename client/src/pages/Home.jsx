@@ -15,9 +15,11 @@ class Home extends React.Component {
             apiResponse: "",
             user: this.context.user,
             reservations: null,
+            volunteers: null,
             donations: [],
             amount: "",
-            anon: false
+            anon: false,
+            schedule: null
         };
     }
 
@@ -63,6 +65,36 @@ class Home extends React.Component {
             });
     }
 
+    cancelVol(id) {
+        let payload={
+            id: id
+        }
+        fetch("http://localhost:8080/cancelVolunteer",{
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers:{ 'Content-Type': 'application/json' }
+            })
+            .then(res => res.json())
+            .then(res => { 
+                //this.setState({ apiResponse: res });
+
+                if (res !== undefined)
+                {
+                    console.log("Cancellation recieved");
+                    console.log(res);
+                    this.getMyVolunteer();
+                    this.getVolunteer();
+
+
+                } else {
+                    console.log("Cancellation failed");
+                    console.log(this.state.apiResponse)
+                    this.getReservations();
+                    
+                }
+            });
+    }
+
     donate() {
 
         if (this.state.anon === null)
@@ -71,7 +103,6 @@ class Home extends React.Component {
                 anon: false
               });
         }
-
 
         let payload={
             username: this.state.user,
@@ -146,9 +177,6 @@ class Home extends React.Component {
     }
     
 
-
-
-
     getReservations() {
 
         let payload={
@@ -180,6 +208,68 @@ class Home extends React.Component {
             });
     }
 
+    getVolunteer() {
+
+        let payload={
+                name: this.state.user
+            }
+        
+        console.log("getVolunteer() => "+payload.name);
+
+        fetch("http://localhost:8080/volunteerSchedule",{
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers:{ 'Content-Type': 'application/json' }
+            })
+            .then(res => res.json())
+            .then(res => { 
+                //this.setState({ apiResponse: res });
+
+                if (res.volunteers.length !== 0)
+                {
+                    console.log("volunteer recieved");
+                    console.log(res);
+                    this.setState({volunteers: res.volunteers})
+
+                } else {
+                    console.log("No volunteers");
+                    this.setState({volunteers: null})
+                    
+                }
+            });
+    }
+
+    getMyVolunteer() {
+
+        let payload={
+                name: this.state.user
+            }
+        
+        console.log("getMySchedule() => "+payload.name);
+
+        fetch("http://localhost:8080/mySchedule",{
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers:{ 'Content-Type': 'application/json' }
+            })
+            .then(res => res.json())
+            .then(res => { 
+                //this.setState({ apiResponse: res });
+
+                if (res.schedule.length !== 0)
+                {
+                    console.log("schedule recieved");
+                    console.log(res);
+                    this.setState({schedule: res.schedule})
+
+                } else {
+                    console.log("No schedule");
+                    this.setState({schedule: null})
+                    
+                }
+            });
+    }
+
 
     callAPI() {
         fetch("http://localhost:8080/")
@@ -191,14 +281,99 @@ class Home extends React.Component {
         this.callAPI();
         this.getReservations();
         this.getDonation();
+        this.getVolunteer();
+        this.getMyVolunteer();
     }
 
     render() {
 
         const madeReservationsDate = [];
+        const volunteerData = [];
+        const scheduleData = [];
         let donations = [];
+        let volString = null;
 
-        // Create a list of date objects that we can pass into time picker
+        //Populate my Volunteer Data
+        if (this.state.schedule !== null) 
+        {
+            for (const [index, value] of this.state.schedule.entries()) {
+                    scheduleData.push(
+                    <li class="list-group-item list-group-item-info">
+                        <div className="row">
+                            <div className="offset-1 col-1">
+                                <div className="d-flex justify-content-center"><h3><Link to="/" className="text-danger" onClick={(e)=> this.cancelVol(value._id)} ><i className="fas fa-ban"></i></Link></h3></div>
+                            </div>
+                            <div className="col-8">
+                                <div className="d-flex justify-content-center"> {value.type}</div>
+                                <div className="d-flex justify-content-center"> {this.getFormattedDate(new Date(value.reservedDate))} {value.timeStart+":00"}</div>
+                            </div>
+                            <div className="col-1">
+                                {(value.type === "Homecare")?<h3><i className="fas fa-clinic-medical"></i></h3>
+                                : (value.type === "Shuttle")?<h3><i className="fas fa-car"></i></h3>
+                                : (value.type === "Class")?<h3><i className="fas fa-graduation-cap"></i></h3>
+                                :null
+                                }
+                            </div>
+                        </div>
+                    </li>
+                )
+            }
+            
+        }
+
+        //Populate Volunteer Data
+        if (this.state.volunteers !== null) 
+        {
+            for (const [index, value] of this.state.volunteers.entries()) {
+   
+                if (value.type === "Homecare")
+                {
+                        volString = (<tr key={index}><td> {this.getFormattedDate(new Date(value.reservedDate))} {value.timeStart+":00"}</td><td><i className="fas fa-clinic-medical"></i> {value.type}</td><td>{value.name}</td><td>
+                    
+                    
+                    {(this.context.user === value.name)?<span className="badge badge-secondary" >Accept Service</span>
+                    :
+                    <Link to={{
+                        pathname: "/accept",
+                        state: { 
+                            r: value
+                        }
+                    }} className="badge badge-info"  >Accept Service</Link>
+                }
+                
+                </td></tr>)
+                
+
+
+                } else if (value.type === "Shuttle")
+                {
+                        volString = (<tr key={index}><td> {this.getFormattedDate(new Date(value.reservedDate))} {value.timeStart+":00"}</td><td><i className="fas fa-car"></i> {value.type}</td><td>{value.name}</td><td>
+                    
+                    
+                    {(this.context.user === value.name)?<span className="badge badge-secondary" >Accept Service</span>
+                    :
+                        <Link to={{
+                            pathname: "/accept",
+                            state: { 
+                                r: value
+                            }
+                         }} className="badge badge-info" >Accept Service</Link>
+                    }
+                
+                </td></tr>)
+                } else {
+
+                    volString = (<tr key={index}><td> {this.getFormattedDate(new Date(value.reservedDate))} {value.timeStart+":00"}</td><td><i className="fas fa-graduation-cap"></i> {value.type}</td><td>{value.name}</td><td>
+                <button disabled className="badge badge-secondary" >Meet at specified time!</button>
+                </td></tr>)
+                }
+                
+
+                volunteerData.push(volString);
+              }
+        }
+
+        //Populate Reservation Data
         if (this.state.reservations !== null) 
         {
             for (const [index, value] of this.state.reservations.entries()) {
@@ -211,6 +386,7 @@ class Home extends React.Component {
               }
         }
 
+        //Populate Donation Data
         if (this.state.donations !== null) 
         {
             for (const [index, value] of this.state.donations.entries()) {
@@ -220,8 +396,8 @@ class Home extends React.Component {
                             <div className="offset-1 col-1">
                                 <h3><i className="fas fa-coins"></i></h3>
                             </div>
-                            <div className="col-8">
-                                <h5> ${value.amount}.00</h5>
+                            <div className="col-8 ">
+                                <div className="d-flex justify-content-center"><h5> ${value.amount}.00</h5></div>
                             </div>
                             <div className="col-1">
                                 {(value.anon === true)?<h3><i className="fas fa-user-secret"></i></h3>:null}
@@ -230,8 +406,6 @@ class Home extends React.Component {
                     </li>
                 )
             }
-
-            
             
             //Prune donations
             if (donations.length > 5)
@@ -239,12 +413,7 @@ class Home extends React.Component {
                 donations = donations.slice(Math.max(donations.length - 5, 0));
                 donations.unshift(<li class="list-group-item list-group-item-light text-center">Showing last 5</li>)
             }
-            
-            
         }
-
-
-
 
         if (this.context.user === undefined) {
             console.log("Not logged in redirecting")
@@ -254,16 +423,78 @@ class Home extends React.Component {
         return (
             <div className = "container col-12 mt-3">
 
+            
+
             { (this.state.apiResponse !== "") 
                 ? 
-                    <div className="alert alert-success" role="alert">
+                <div className="row mb-0 mt-0">
+                    <div className="alert alert-light mb-0 col-6" role="alert">
                         <i className="fas fa-cogs"></i> {this.state.apiResponse}
                     </div>
+
+
+                    <div className="alert alert-light mb-0 col-6" role="alert">
+                        <i className="fas fa-user"></i> Welcome {this.context.user}
+                    </div>
+
+                </div>
+
                 :
                     <div className="alert alert-danger" role="alert">
                         <i className="fas fa-plug"></i> No Connection!
                     </div>
-            }
+            }      
+
+   
+
+                <div className="">
+                    <div className="card shadow text-center mb-3 mt-0">
+                        <div className="card-header">
+                            <i className="fas fa-clipboard-list"></i> Volunteer Services
+                        </div>
+
+                        <div className="card-body">
+
+                    { (this.state.volunteers === null || this.state.volunteers.length === 0) 
+                    ? 
+                        <div className="mb-1">
+                            <h1 className="mb-2 mt-2 display-1"><i class="fas fa-sad-tear"></i></h1>
+                            <h5 className="card-title">There are currently no volunteer activity</h5>
+                            <p className="card-text">Why not sign up to teach a class?</p>
+                        </div>
+                    :
+                    <div className="">
+          
+                        <table className="table table-striped">
+                        <thead>
+                        <tr className="">
+                            <th scope="col">When</th>
+                            <th scope="col">What</th>
+                            <th scope="col">Volunteer</th>
+                            <th scope="col">Options</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                                {volunteerData}
+                        </tbody>
+                        </table>
+                    </div>
+
+                    }
+
+
+                        </div>
+                        <div className="card-footer text-muted">
+                        { (this.state.volunteers === "No reservations found" || this.state.volunteers === null) 
+                        ? 
+                            "Unavailable"
+                        :
+                            this.state.volunteers.length + " services offered"
+                        }
+                        </div>
+                    </div>
+                </div>
+
 
 
 
@@ -277,14 +508,14 @@ class Home extends React.Component {
 
                     { (this.state.reservations === "No reservations found" || this.state.reservations === null) 
                     ? 
-                        <div className="mb-5">
+                        <div className="mt-5 mb-5">
                             <h5 className="card-title">Nothing to see here...</h5>
                             <p className="card-text">Your reservations will appear here. So empty!</p>
                         </div>
                     :
                     <div className="">
           
-                        <table className="table table-responsive-sm table-striped">
+                        <table className="table table-striped">
                         <thead>
                         <tr className="">
                             <th scope="col">When</th>
@@ -321,12 +552,23 @@ class Home extends React.Component {
                 <div className="card shadow text-center bg-light mt-3" >
                     <div className="card-header"><i className="fas fa-hands-helping"></i> Volunteer Sign-up</div>
                     <div className="card-body">
-                    <h5 className="card-title mt-5">You are not currently volunteering.</h5>
 
-                    <p className="card-text mb-5">Why not check it out? Help out your local community!</p>
+
+                    { (this.state.schedule === null || this.state.schedule.length === 0) 
+                        ? 
+                            <div>
+                                <h5 className="card-title mt-5">You are not currently volunteering.</h5>
+                                <p className="card-text mb-5">Why not check it out? Help out your local community!</p>
+                            </div>
                         
+                        :
+                            <ul className="list-group mb-2">
+                                {scheduleData}
+                            </ul>
+                        }
 
-                    <Link to="/reservations" className="btn btn-info mb-4">Volunteer <i className="fas fa-arrow-circle-right"></i></Link>
+
+                    <Link to="/volunteer" className="btn btn-info mt-2 mb-2">Volunteer <i className="fas fa-arrow-circle-right"></i></Link>
                 
                     </div>
 

@@ -134,7 +134,7 @@ class Rentals extends React.Component {
             {(this.state.message !== null)
             ?
                 
-                    <small><strong>{this.state.message}</strong></small>
+                    <small className="badge badge-warning"><strong>{this.state.message}</strong></small>
                 
             : null
             }

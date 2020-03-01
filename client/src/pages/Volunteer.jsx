@@ -7,14 +7,14 @@ import Cookies from "js-cookie";
 import {UserContext} from '../context/UserContext';
 
 
-class Reservations extends React.Component {
+class Volunteer extends React.Component {
 
     static contextType = UserContext;
 
     state = {
         startDate: new Date(),
         startTime: setHours(setMinutes(new Date(), 0), 7),
-        location: "",
+        type: "",
         user: Cookies.get("username"),
         times: null,
         step: 0
@@ -40,24 +40,25 @@ class Reservations extends React.Component {
         this.setState({startTime: time})
       }
 
-      makeReservation(time){
+      addVolunteer(time){
 
         this.pickTime(time);
-        let rentalStart = time.getHours();
-        let rentalEnd = rentalStart+1;
+        let volStart = time.getHours();
+        let volEnd = volStart+1;
         
         var payload={
-                room: this.state.location,
-                timeStart: rentalStart,
-                timeEnd: rentalEnd,
+                room: this.state.type,
+                timeStart: volStart,
+                timeEnd: volEnd,
                 status: "confirmed",
+                type: this.state.type,
                 reservedDate: this.state.startDate,
                 name: this.state.user
             }
 
-        console.log("makeReservation() => "+payload.name+", "+payload.timeStart);
+        console.log("addVolunteer() => "+payload.name+", "+payload.timeStart);
 
-        fetch("http://localhost:8080/reserve",{
+        fetch("http://localhost:8080/addVolunteer",{
             method: 'POST',
             body: JSON.stringify(payload),
             headers:{ 'Content-Type': 'application/json' }
@@ -79,18 +80,18 @@ class Reservations extends React.Component {
             });
       }
 
-      getAvailability(room) {
+      getVolAvail(type) {
 
         this.state.startDate.setHours(0, 0, 0, 0);
 
         var payload={
-                room: room,
+                type: type,
                 date: this.state.startDate
             }
         
-        console.log("getAvailability() => "+payload.room+", "+payload.date);
+        console.log("getVolAvail() => "+payload.type+", "+payload.date);
 
-        fetch("http://localhost:8080/availability",{
+        fetch("http://localhost:8080/volAvailability",{
             method: 'POST',
             body: JSON.stringify(payload),
             headers:{ 'Content-Type': 'application/json' }
@@ -103,7 +104,7 @@ class Reservations extends React.Component {
                 {
                     console.log("Availability recieved");
                     console.log(this.state.apiResponse);
-                    this.setState({location: room, times: res.times, step: 2})
+                    this.setState({times: res.times, type: type, step: 2})
 
                 } else {
                     console.log("Availability failed");
@@ -130,13 +131,13 @@ class Reservations extends React.Component {
             <div className = "container mt-3">
                 <div className="card shadow text-center mt-3">
                     <div className="card-header">
-                        <i className="fas fa-calendar-day"></i> Reservations
+                        <i className="fas fa-hands-helping"></i> Volunteering
                     </div>
         { (this.state.step === 0) 
         ? 
 
             <div className="card-body">
-               <h5 className="card-title mb-4">When do you wish to make the reservation for?</h5>
+               <h5 className="card-title mb-4">When do you wish to volunteer?</h5>
     
                         <DatePicker
                             selected={this.state.startDate}
@@ -152,7 +153,7 @@ class Reservations extends React.Component {
             </div>
                                 <div>
             <hr />
-            <small>You can only make Reservation a maximum of 31 days in advance!</small>
+            <small>You can schedule volunteering a maximum of 31 days in advance!</small>
         </div>
                 </div>
 
@@ -170,10 +171,10 @@ class Reservations extends React.Component {
             <div className="col col-md-5 col-sm-12 col-lg-5 col-lg-5 mb-2"> 
             <div class="card text-center" >
                 <div className="card-header">
-                    <i class="fas fa-info-circle"></i> Reservation Details
+                    <i class="fas fa-info-circle"></i> Volunteer Details
                 </div>
                 <ul className="list-group list-group-flush">
-                    <li className="list-group-item"><i class="fas fa-map-marked-alt"></i> Location: <strong>{(this.state.location)}</strong> </li>
+                    <li className="list-group-item"><i class="fas fa-map-tag"></i> Type: <strong>{(this.state.type)}</strong> </li>
                     <li className="list-group-item"><i class="fas fa-calendar-check"></i> Date: <strong>{this.getFormattedDate(this.state.startDate)}</strong></li>
                 </ul>
             </div>
@@ -192,7 +193,7 @@ class Reservations extends React.Component {
                             minTime={setHours(setMinutes(new Date(), 0), 7)}
                             maxTime={setHours(setMinutes(new Date(), 0), 19)}
                             includeTimes={availableTimes}
-                            onChange={date => this.makeReservation(date)}
+                            onChange={date => this.addVolunteer(date)}
                             timeIntervals={60}
                             placeholderText="Select Time"
                             timeCaption="Time"
@@ -210,7 +211,7 @@ class Reservations extends React.Component {
 
         <div>
             <hr />
-            <small>Reservations only available between 7 AM - 7 PM</small>
+            <small>Volunteering hours are between 7 AM - 7 PM</small>
         </div>
         </div>
 :((this.state.step === 3) ) ?
@@ -225,7 +226,7 @@ class Reservations extends React.Component {
           <i class="fas fa-info-circle"></i> Reservation Details
           </div>
           <ul className="list-group list-group-flush">
-              <li className="list-group-item"><i class="fas fa-map-marked-alt"></i> Location: <strong>{(this.state.location)}</strong>  </li>
+              <li className="list-group-item"><i class="fas fa-map-tag"></i> Type: <strong>{(this.state.type)}</strong>  </li>
               <li className="list-group-item"><i class="fas fa-calendar-check"></i> Date: <strong>{this.getFormattedDate(this.state.startDate)}</strong></li>
               <li className="list-group-item"><i class="far fa-clock"></i> Time: <strong>{this.state.startTime.getHours()}:00</strong></li>
           </ul>
@@ -236,7 +237,7 @@ class Reservations extends React.Component {
 
           <div className="card-header"><i className="fas fa-clock"></i> Thank You!</div>
               <div class="card-body">
-              <h5 class="card-title">Your reservation has been confirmed!</h5>
+              <h5 class="card-title">Your volunteering has been confirmed!</h5>
                     <h1><i className="fas fa-check"></i></h1>
                     <Link to="/" className="btn btn-outline-success bg-white">Ok!</Link>
               </div>
@@ -247,7 +248,7 @@ class Reservations extends React.Component {
 
   <div>
       <hr />
-      <small>Reservations only available between 7 AM - 7 PM</small>
+      <small>Volunteering hours are between 7 AM - 7 PM</small>
   </div>
   </div>
 
@@ -255,13 +256,13 @@ class Reservations extends React.Component {
       
         <div className="card-body">
 
-        <h5 className="card-title">Gotcha. Which location?</h5>
+        <h5 className="card-title">What do you want to sign up for?</h5>
             <small>For <strong>{this.getFormattedDate(this.state.startDate)}</strong></small>
             <div className="mt-3" style=
             {{height: 150+'px'}}>
-                <button type="button" value="Rec Area" onClick={(e)=> this.getAvailability("Rec Area")} className="btn btn-primary btn-lg h-100 col-3"><i className="fas fa-home"></i> <div>Rec Area</div></button>
-                <button type="button" value="Main Hall" onClick={(e)=> this.getAvailability("Main Hall")} className="btn btn-primary btn-lg ml-1 mr-1 h-100 col-3"><i className="fas fa-archway"></i> <div>Main Hall</div></button>
-                <button type="button" value="Picnic Area" onClick={(e)=> this.getAvailability("Picnic Area")} className="btn btn-primary btn-lg h-100 col-3"><i className="fas fa-campground"></i> <div>Picnic Area</div></button>
+                <button type="button" value="Rec Area" onClick={(e)=> this.getVolAvail("Shuttle")} className="btn btn-warning btn-lg h-100 col-3"><i className="fas fa-car"></i> <div>Shuttle</div></button>
+                <button type="button" value="Main Hall" onClick={(e)=> this.getVolAvail("Homecare")} className="btn btn-warning btn-lg ml-1 mr-1 h-100 col-3"><i className="fas fa-clinic-medical"></i> <div>Homecare</div></button>
+                <button type="button" value="Picnic Area" onClick={(e)=> this.getVolAvail("Class")} className="btn btn-warning btn-lg h-100 col-3"><i className="fas fa-graduation-cap"></i> <div>Teach Class</div></button>
 
             </div>
             <div className="mt-4">
@@ -281,4 +282,4 @@ class Reservations extends React.Component {
     }
 }
 
-export default Reservations;
+export default Volunteer;

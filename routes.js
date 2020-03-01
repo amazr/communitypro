@@ -1,6 +1,7 @@
 const express = require('express');
 const userModel = require('./models/user');
 const reservationModel = require('./models/reservation');
+const volunteerModel = require('./models/volunteer');
 const app = express();
 
 app.get('/', (req,res) => {
@@ -70,6 +71,31 @@ app.post('/availability', (req,res) => {
     });
 });
 
+app.post('/volAvailability', (req,res) => {
+    //req.body.room
+    //req.body.date
+    let response = {
+        times: [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+        message: ""
+    };
+
+    volunteerModel.find({
+        reservedDate: req.body.date
+    },
+    (err, volunteers) => {
+        if (err) response.message = err;
+        else if (volunteers.length === 0) response.message = "You have no other volunteer duties this day";
+        else {
+            volunteers.forEach((volunteers) => {
+                let index = response.times.indexOf(volunteers.timeStart);
+                response.times.splice(index, 1);
+            });
+            response.message = ("Found " + volunteers.length + " other duties on this date");
+        }
+        res.send(response);
+    });
+});
+
 app.post('/reserve', (req,res) => {
 
     let reservation = new reservationModel(req.body);
@@ -78,6 +104,17 @@ app.post('/reserve', (req,res) => {
     reservation.save((err) => {
         if (err) res.send(err);
         else res.send(reservation);
+      });
+});
+
+app.post('/addVolunteer', (req,res) => {
+
+    let volunteer = new volunteerModel(req.body);
+    volunteer.bookedDate = Date.now();
+
+    volunteer.save((err) => {
+        if (err) res.send(err);
+        else res.send(volunteer);
       });
 });
 
@@ -100,11 +137,62 @@ app.post('/userReservations', (req,res) => {
     });
 });
 
+app.post('/volunteerSchedule', (req,res) => {
+    let response = {
+        volunteers: [],
+        message: ""
+    };
+
+    volunteerModel.find({
+    },
+    (err, volunteers) => {
+        if (err || volunteers.length === 0) response.message = "No volunteer data found";
+        else {
+            response.volunteers = volunteers;
+            response.message = "Successfully found volunteer data";
+        }
+        res.send(response);
+    });
+});
+
+app.post('/mySchedule', (req,res) => {
+    let response = {
+        schedule: [],
+        message: ""
+    };
+
+    volunteerModel.find({
+        name: req.body.name
+    },
+    (err, schedule) => {
+        if (err || schedule.length === 0) response.message = "No my data found";
+        else {
+            response.schedule = schedule;
+            response.message = "Successfully found my data";
+        }
+        res.send(response);
+    });
+});
+
 app.post('/cancelReservation', (req,res) => {
     let response = {
         message: ""
     };
     reservationModel.deleteOne({
+        _id: req.body.id
+    },
+    (err) => {
+        if (err) response.message = "Failed to cancel reservation";
+        else response.message = "Reservation successfully canceled";
+        res.send(response);
+    });
+});
+
+app.post('/cancelVolunteer', (req,res) => {
+    let response = {
+        message: ""
+    };
+    volunteerModel.deleteOne({
         _id: req.body.id
     },
     (err) => {
@@ -132,6 +220,7 @@ app.post('/rent', (req,res) => {
         res.send(response);
     });
 });
+
 
 app.post('/rentalStatus', (req,res) => {
     let response = {
